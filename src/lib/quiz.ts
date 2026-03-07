@@ -10,10 +10,10 @@ import type {
 } from '../types'
 
 const MIN_QUESTIONS = 5
-const DEFAULT_QUESTION_COUNT = 12
+const DEFAULT_QUESTION_COUNT = 10
 
 export function clampQuestionCount(value: number): number {
-  return Math.max(MIN_QUESTIONS, Math.min(30, value || DEFAULT_QUESTION_COUNT))
+  return Math.max(MIN_QUESTIONS, Math.min(60, value || DEFAULT_QUESTION_COUNT))
 }
 
 function shuffle<T>(items: T[], seed: number): T[] {

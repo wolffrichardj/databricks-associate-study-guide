@@ -5,16 +5,24 @@ interface QuizSetupProps {
   config: QuizSessionConfig
   onConfigChange: (config: QuizSessionConfig) => void
   onStart: () => void
+  fullExamDefaultCount: number
+  focusedDefaultCount: number
 }
 
-export function QuizSetup({ config, onConfigChange, onStart }: QuizSetupProps) {
+export function QuizSetup({
+  config,
+  onConfigChange,
+  onStart,
+  fullExamDefaultCount,
+  focusedDefaultCount,
+}: QuizSetupProps) {
   return (
     <section className="panel">
-      <h2>Quiz Setup</h2>
-      <p>Choose focused practice by topic or run an exam-style mixed session.</p>
+      <h2>Practice Wizard</h2>
+      <p>Choose targeted review by topic/domain or run a full-length exam simulation.</p>
 
-      <div className="mode-row">
-        <label>
+      <div className="mode-row" role="radiogroup" aria-label="Session mode">
+        <label className="toggle-chip">
           <input
             type="radio"
             data-testid="mode-focused"
@@ -23,12 +31,13 @@ export function QuizSetup({ config, onConfigChange, onStart }: QuizSetupProps) {
               onConfigChange({
                 ...config,
                 mode: 'focused_topic',
+                questionCount: focusedDefaultCount,
               })
             }
           />
           Focused Topic Mode
         </label>
-        <label>
+        <label className="toggle-chip">
           <input
             type="radio"
             data-testid="mode-overall"
@@ -37,12 +46,13 @@ export function QuizSetup({ config, onConfigChange, onStart }: QuizSetupProps) {
               onConfigChange({
                 ...config,
                 mode: 'overall_skills',
+                questionCount: fullExamDefaultCount,
                 topicId: undefined,
                 domainId: undefined,
               })
             }
           />
-          Dive Into the Test (Overall Skills)
+          Full Test Simulation
         </label>
       </div>
 
@@ -102,7 +112,7 @@ export function QuizSetup({ config, onConfigChange, onStart }: QuizSetupProps) {
           data-testid="question-count"
           type="number"
           min={5}
-          max={30}
+          max={60}
           value={config.questionCount}
           onChange={(event) =>
             onConfigChange({
@@ -111,10 +121,15 @@ export function QuizSetup({ config, onConfigChange, onStart }: QuizSetupProps) {
             })
           }
         />
+        <small className="help-text">
+          {config.mode === 'overall_skills'
+            ? `Default is ${fullExamDefaultCount} questions to mirror a realistic full exam cadence. Adjust as needed.`
+            : `Default is ${focusedDefaultCount} questions for efficient targeted practice.`}
+        </small>
       </label>
 
       <button type="button" onClick={onStart} data-testid="start-quiz">
-        Start Quiz
+        Start Session
       </button>
     </section>
   )

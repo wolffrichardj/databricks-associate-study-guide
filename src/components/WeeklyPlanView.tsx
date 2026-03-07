@@ -5,10 +5,9 @@ import type { WeeklyPlanState } from '../types'
 interface WeeklyPlanViewProps {
   weeklyPlan: WeeklyPlanState
   onToggleTask: (taskId: string, checked: boolean) => void
-  onResetWeekly: () => void
 }
 
-export function WeeklyPlanView({ weeklyPlan, onToggleTask, onResetWeekly }: WeeklyPlanViewProps) {
+export function WeeklyPlanView({ weeklyPlan, onToggleTask }: WeeklyPlanViewProps) {
   const progressMap = new Map(weeklyPlan.tasksProgress.map((task) => [task.taskId, task]))
   const checkedCount = weeklyPlan.tasksProgress.filter((task) => task.checked).length
 
@@ -21,9 +20,6 @@ export function WeeklyPlanView({ weeklyPlan, onToggleTask, onResetWeekly }: Week
             Track your day-by-day execution. Progress is stored on this device so you can resume anytime.
           </p>
         </div>
-        <button type="button" onClick={onResetWeekly} className="secondary">
-          Reset Weekly Tracker
-        </button>
       </header>
 
       <p className="stat-text" data-testid="weekly-progress">
