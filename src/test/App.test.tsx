@@ -6,6 +6,7 @@ import App from '../App'
 describe('App', () => {
   beforeEach(() => {
     localStorage.clear()
+    window.history.replaceState({}, '', '/')
   })
 
   it('persists weekly task selections after remount', async () => {
@@ -54,5 +55,18 @@ describe('App', () => {
     await user.click(screen.getByTestId('reset-program'))
 
     expect(screen.getByTestId('weekly-progress')).toHaveTextContent('Completed 0 of 8 tasks')
+  })
+
+  it('keeps selected tab after refresh via URL query', async () => {
+    const user = userEvent.setup()
+    const { unmount } = render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Quiz' }))
+    expect(window.location.search).toContain('view=quiz')
+
+    unmount()
+    render(<App />)
+
+    expect(screen.getByTestId('start-quiz')).toBeInTheDocument()
   })
 })
