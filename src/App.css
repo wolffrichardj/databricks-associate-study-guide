@@ -1,0 +1,223 @@
+:root {
+  font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  color: #102531;
+  background: linear-gradient(130deg, #f8fcff 0%, #ebf5f6 45%, #fefbf2 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.app-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.25rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.app-header {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+}
+
+.app-header p {
+  margin: 0.4rem 0 0;
+  color: #355061;
+}
+
+.tab-nav {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tab {
+  border: 1px solid #b5ccd1;
+  background: #ffffff;
+  color: #0f2d3f;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.tab.active {
+  border-color: #0d7c7a;
+  background: #d8f3f2;
+  font-weight: 600;
+}
+
+.panel {
+  background: #ffffff;
+  border: 1px solid #d7e8ec;
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.panel-header h2,
+.panel h2,
+.panel h3 {
+  margin-top: 0;
+}
+
+.task-list,
+.compact-list,
+.recommendation-list {
+  margin: 0;
+  padding-left: 1rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.task-item {
+  padding: 0.75rem;
+  background: #f7fbfc;
+  border-radius: 0.65rem;
+  list-style: none;
+}
+
+.task-item label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.task-item p {
+  margin: 0.4rem 0;
+}
+
+.stat-text {
+  font-weight: 600;
+  margin: 0.25rem 0 0.8rem;
+}
+
+.timestamp {
+  color: #355061;
+  font-size: 0.9rem;
+}
+
+.resource-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.resource-links a {
+  background: #f3f6f9;
+  border: 1px solid #d0dbe2;
+  padding: 0.25rem 0.45rem;
+  border-radius: 0.4rem;
+  color: #1f4a68;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.mode-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 0.75rem 0;
+}
+
+label {
+  display: grid;
+  gap: 0.3rem;
+}
+
+input[type='number'],
+select {
+  width: 100%;
+  border: 1px solid #c4d3d8;
+  border-radius: 0.4rem;
+  padding: 0.45rem;
+}
+
+.choice-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.8rem 0;
+}
+
+.choice-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  border: 1px solid #e3ecef;
+  border-radius: 0.5rem;
+  background: #fdfefe;
+  padding: 0.5rem;
+}
+
+.actions-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+button {
+  border: 1px solid #1e7583;
+  background: #0c8da2;
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+}
+
+button.secondary {
+  border-color: #9bb5bf;
+  background: #f3f9fb;
+  color: #1f4a68;
+}
+
+button.danger {
+  border-color: #9e2e2e;
+  background: #c73636;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .app-shell {
+    padding: 0.8rem;
+  }
+
+  .app-header {
+    flex-direction: column;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-header {
+    flex-direction: column;
+  }
+}

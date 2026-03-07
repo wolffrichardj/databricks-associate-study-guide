@@ -1,0 +1,81 @@
+import type { StudyResource } from '../types'
+
+export const RESOURCES: StudyResource[] = [
+  {
+    id: 'exam-guide',
+    title: 'Data Engineer Associate Certification Page',
+    url: 'https://www.databricks.com/learn/certification/data-engineer-associate',
+    type: 'exam',
+    topicIds: ['delta-basics', 'workspace-basics', 'auto-loader', 'spark-sql', 'jobs', 'unity-catalog'],
+  },
+  {
+    id: 'academy-ingestion',
+    title: 'Data Ingestion with Lakeflow Connect',
+    url: 'https://www.databricks.com/learn/training/catalog/data-ingestion-lakeflow-connect',
+    type: 'academy',
+    topicIds: ['auto-loader', 'ingestion-patterns'],
+  },
+  {
+    id: 'academy-jobs',
+    title: 'Deploy Workloads with Lakeflow Jobs',
+    url: 'https://www.databricks.com/learn/training/catalog/deploy-workloads-lakeflow-jobs',
+    type: 'academy',
+    topicIds: ['jobs', 'pipeline-ops'],
+  },
+  {
+    id: 'academy-pipelines',
+    title: 'Build Data Pipelines with Lakeflow Spark Declarative Pipelines',
+    url: 'https://www.databricks.com/learn/training/catalog/build-data-pipelines-lakeflow-spark-declarative-pipelines',
+    type: 'academy',
+    topicIds: ['spark-sql', 'streaming', 'pipeline-ops'],
+  },
+  {
+    id: 'academy-governance',
+    title: 'Data Management and Governance with Unity Catalog',
+    url: 'https://www.databricks.com/learn/training/catalog/data-management-governance-unity-catalog',
+    type: 'academy',
+    topicIds: ['unity-catalog', 'quality'],
+  },
+  {
+    id: 'docs-delta',
+    title: 'What is Delta Lake in Databricks?',
+    url: 'https://docs.databricks.com/aws/en/delta/',
+    type: 'docs',
+    topicIds: ['delta-basics'],
+  },
+  {
+    id: 'docs-autoloader',
+    title: 'What is Auto Loader?',
+    url: 'https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/',
+    type: 'docs',
+    topicIds: ['auto-loader', 'ingestion-patterns'],
+  },
+  {
+    id: 'docs-streaming',
+    title: 'Structured Streaming Tutorial',
+    url: 'https://docs.databricks.com/aws/en/structured-streaming/tutorial',
+    type: 'docs',
+    topicIds: ['streaming'],
+  },
+  {
+    id: 'docs-jobs',
+    title: 'Lakeflow Jobs Overview',
+    url: 'https://docs.databricks.com/aws/en/jobs/',
+    type: 'docs',
+    topicIds: ['jobs', 'pipeline-ops'],
+  },
+  {
+    id: 'docs-unity',
+    title: 'What is Unity Catalog?',
+    url: 'https://docs.databricks.com/aws/en/data-governance/unity-catalog/',
+    type: 'docs',
+    topicIds: ['unity-catalog', 'quality'],
+  },
+  {
+    id: 'free-edition',
+    title: 'Databricks Free Edition',
+    url: 'https://www.databricks.com/learn/free-edition',
+    type: 'exam',
+    topicIds: ['workspace-basics', 'jobs', 'streaming', 'delta-basics'],
+  },
+]
