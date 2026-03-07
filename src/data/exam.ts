@@ -44,4 +44,6 @@ export const TOPICS: Topic[] = [
   { id: 'pipeline-ops', domainId: 'production', name: 'Pipeline Monitoring and Repair' },
   { id: 'unity-catalog', domainId: 'governance', name: 'Unity Catalog Namespace and Privileges' },
   { id: 'quality', domainId: 'governance', name: 'Data Quality and Governance Controls' },
+  { id: 'dbsql', domainId: 'platform', name: 'Databricks SQL' },
+  { id: 'dlt', domainId: 'processing', name: 'Delta Live Tables' },
 ]

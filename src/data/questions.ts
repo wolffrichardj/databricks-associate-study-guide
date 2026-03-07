@@ -93,16 +93,16 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     topicId: "workspace-basics",
     domainId: "platform",
     prompt:
-      "Which statement best describes Databricks Free Edition for exam prep?",
+      "Which statement best describes Databricks Community Edition?",
     choices: [
       "It is a no-cost workspace suitable for guided hands-on practice.",
       "It requires an enterprise contract to run notebooks.",
-      "It only supports SQL and blocks Python notebooks.",
-      "It cannot run workflows.",
+      "It relies on the customer's cloud account to provision infrastructure.",
+      "It restricts usage strictly to Databricks SQL clusters.",
     ],
     correctIndex: 0,
     explanation:
-      "Free Edition is designed as a no-cost hands-on learning environment.",
+      "Community Edition is designed as a no-cost hands-on workspace for learning, prototyping, and collaborative exploration.",
     resourceIds: ["free-edition", "exam-guide"],
     difficulty: "easy",
   },
@@ -113,13 +113,13 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     prompt: "Where should a team keep notebooks for versioned collaboration?",
     choices: [
       "Personal user folder only",
-      "Repos backed by Git",
+      "Repos (Git Folders) backed by Git",
       "Cluster event logs",
       "SQL warehouse history",
     ],
     correctIndex: 1,
     explanation:
-      "Databricks Repos integrate notebooks with Git workflows for collaboration.",
+      "Databricks Repos (now called Git Folders) integrate notebooks directly with Git workflows for collaboration.",
     resourceIds: ["free-edition", "exam-guide"],
     difficulty: "medium",
   },
@@ -298,7 +298,7 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     ],
     correctIndex: 1,
     explanation:
-      "Low-cardinality, query-aligned partitions reduce unnecessary scanning.",
+      "Low-cardinality partitions avoid over-fragmentation while aiding data skipping. Note: For tables under 1TB, Databricks recommends Liquid Clustering or native data skipping instead of explicit partitioning.",
     resourceIds: ["docs-autoloader", "academy-ingestion"],
     difficulty: "medium",
   },
@@ -343,16 +343,16 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     topicId: "spark-sql",
     domainId: "processing",
     prompt:
-      "A developer needs to find the most recent order for each customer. Which SQL window function and clause correctly ranks orders descending by date within each customer group?",
+      "A developer needs to find the single most recent order for each customer. Which SQL window function and clause should they use?",
     choices: [
+      "`ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC)`",
       "`RANK() OVER (PARTITION BY customer_id ORDER BY order_date DESC)`",
-      "`ROW_NUMBER() OVER (GROUP BY customer_id ORDER BY order_date DESC)`",
       "`MAX(order_date) OVER (PARTITION BY customer_id)`",
       "`FIRST_VALUE(order_id) OVER (ORDER BY customer_id, order_date DESC)`",
     ],
     correctIndex: 0,
     explanation:
-      "Window functions like `RANK()` or `ROW_NUMBER()` require an `OVER` clause with `PARTITION BY` to define the group (customer) and `ORDER BY` to define the sequence (descending date) to correctly rank records.",
+      "`ROW_NUMBER()` assigns a unique ordering within each customer partition. Filtering to row number 1 returns one most-recent row per customer, breaking ties unlike `RANK()`.",
     resourceIds: ["exam-guide", "academy-pipelines"],
     difficulty: "hard",
   },
@@ -397,10 +397,10 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     topicId: "streaming",
     domainId: "processing",
     prompt:
-      "Which output mode is suitable for continuously updated aggregate results?",
+      "Which output mode is required to emit the full aggregate result table each trigger?",
     choices: ["Append", "Complete", "Ignore", "Static"],
     correctIndex: 1,
-    explanation: "Complete mode emits the full aggregate result each trigger.",
+    explanation: "Complete mode emits the full aggregate result each trigger. Append is the default, and Update mode only emits updated rows.",
     resourceIds: ["docs-streaming", "academy-pipelines"],
     difficulty: "medium",
   },
@@ -430,12 +430,12 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
       "Which trigger style is used to process currently available data and then stop?",
     choices: [
       "Continuous forever",
-      "availableNow / once-style trigger",
+      "`Trigger.AvailableNow`",
       "No trigger option needed",
       "Only manual reruns",
     ],
     correctIndex: 1,
-    explanation: "Available-now/once triggers process backlog and terminate.",
+    explanation: "`Trigger.AvailableNow` processes all currently available data and then stops. `Trigger.Once` is deprecated in newer Databricks Runtime versions.",
     resourceIds: ["docs-streaming", "academy-pipelines"],
     difficulty: "medium",
   },
@@ -508,6 +508,82 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
       "Ephemeral job compute can reduce idle spend and run-to-run drift.",
     resourceIds: ["docs-jobs", "academy-jobs"],
     difficulty: "medium",
+  },
+
+  // Databricks SQL (DBSQL)
+  {
+    key: "dbsql-endpoints",
+    topicId: "dbsql",
+    domainId: "platform",
+    prompt:
+      "What is the primary purpose of Serverless SQL Warehouses in Databricks SQL?",
+    choices: [
+      "To run continuously executing Structured Streaming pipelines",
+      "To provide instant compute for BI and SQL workloads without managing infrastructure",
+      "To store machine learning models in MLflow",
+      "To execute distributed training of PyTorch models",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Serverless SQL Warehouses are optimized for high-concurrency, low-latency SQL workloads like BI dashboards, abstracting away cluster management.",
+    resourceIds: ["docs-dbsql", "academy-platform"],
+    difficulty: "medium",
+  },
+  {
+    key: "dbsql-dashboards",
+    topicId: "dbsql",
+    domainId: "platform",
+    prompt:
+      "Which feature in Databricks SQL allows users to create parameterized visualizations that automatically update based on user input?",
+    choices: [
+      "Lakeflow Jobs",
+      "Delta Live Tables",
+      "Dashboard Widgets with Parameters",
+      "Unity Catalog Volumes",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Query parameters in Databricks SQL allow dashboard widgets to become interactive, updating visualizations based on selections.",
+    resourceIds: ["docs-dbsql", "academy-platform"],
+    difficulty: "easy",
+  },
+
+  // Delta Live Tables (DLT)
+  {
+    key: "dlt-expectations",
+    topicId: "dlt",
+    domainId: "processing",
+    prompt:
+      "In Delta Live Tables (DLT), what is the function of the `CONSTRAINT` (or `@dlt.expect`) clause?",
+    choices: [
+      "To define foreign key relationships between tables",
+      "To enforce data quality rules and specify handling of invalid records",
+      "To restrict user access to specific rows",
+      "To optimize the layout of data files on disk",
+    ],
+    correctIndex: 1,
+    explanation:
+      "DLT expectations define data quality rules. You can configure them to retain, drop, or fail the pipeline when data violates the constraints (`expect`, `expect or drop`, `expect or fail`).",
+    resourceIds: ["docs-dlt", "academy-pipelines"],
+    difficulty: "medium",
+  },
+  {
+    key: "dlt-streaming-tables",
+    topicId: "dlt",
+    domainId: "processing",
+    prompt:
+      "What is a key characteristic of a Streaming Table in a Delta Live Tables pipeline?",
+    choices: [
+      "It completely overwrites its destination table on every update",
+      "It only processes new data that has arrived since the last pipeline update",
+      "It is identical to a materialized view but requires manual refreshes",
+      "It cannot be used as a source for other tables in the pipeline",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Streaming tables are designed for incremental, stateful processing, only reading new data from the source exactly once.",
+    resourceIds: ["docs-dlt", "academy-pipelines"],
+    difficulty: "hard",
   },
 
   // Production — Ops
@@ -735,7 +811,7 @@ function buildVariant(
   const topicName =
     TOPICS.find((topic) => topic.id === template.topicId)?.name ??
     template.topicId;
-  const prompt = `${template.prompt} (${topicName} scenario ${variantLabel}) ${VARIANT_SUFFIXES[variantIndex]}`;
+  const prompt = `${template.prompt}\n\n*(${topicName} scenario ${variantLabel}) ${VARIANT_SUFFIXES[variantIndex]}*`;
 
   return {
     id: `${template.topicId}-${template.key}-${variantLabel.toLowerCase()}`,

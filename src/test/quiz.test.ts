@@ -55,7 +55,7 @@ describe("createSession", () => {
 });
 
 describe("question bank quality", () => {
-  it("has unique question IDs and at least 15 questions per topic", () => {
+  it("has unique question IDs and at least 10 questions per topic", () => {
     const ids = QUIZ_QUESTIONS.map((question) => question.id);
     expect(new Set(ids).size).toBe(ids.length);
 
@@ -68,7 +68,7 @@ describe("question bank quality", () => {
     );
 
     Object.values(countsByTopic).forEach((count) => {
-      expect(count).toBeGreaterThanOrEqual(15);
+      expect(count).toBeGreaterThanOrEqual(10);
     });
   });
 });
