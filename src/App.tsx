@@ -19,9 +19,12 @@ import { QuizPlayer } from './components/QuizPlayer'
 import { ResultsPanel } from './components/ResultsPanel'
 import { ProgressView } from './components/ProgressView'
 
+const FULL_EXAM_DEFAULT_COUNT = 45
+const FOCUSED_DEFAULT_COUNT = 10
+
 const DEFAULT_QUIZ_CONFIG: QuizSessionConfig = {
   mode: 'focused_topic',
-  questionCount: 12,
+  questionCount: FOCUSED_DEFAULT_COUNT,
 }
 
 function App() {
@@ -119,19 +122,21 @@ function App() {
     })
   }
 
-  const handleResetProgram = () => {
+  const handleStartOver = () => {
     setState(resetState())
     setQuizConfig(DEFAULT_QUIZ_CONFIG)
     setLastResult(undefined)
     setView('weekly')
   }
 
-  const handleResetWeekly = () => {
-    const freshState = resetState()
-    setState((currentState) => ({
-      ...currentState,
-      weeklyPlan: freshState.weeklyPlan,
-    }))
+  const handlePracticeRecommendation = (topicId: string) => {
+    setQuizConfig({
+      mode: 'focused_topic',
+      questionCount: FOCUSED_DEFAULT_COUNT,
+      topicId,
+    })
+    setLastResult(undefined)
+    setView('quiz')
   }
 
   const activeSessionQuestions = state.activeSession
@@ -147,8 +152,14 @@ function App() {
           <h1>Databricks Associate Study App</h1>
           <p>Use focused-topic practice and exam-style sessions to close weak domains quickly.</p>
         </div>
-        <button type="button" onClick={handleResetProgram} className="danger" data-testid="reset-program">
-          Reset Program
+        <button
+          type="button"
+          onClick={handleStartOver}
+          className="danger"
+          data-testid="reset-program"
+          title="Start Over clears your weekly checklist, quiz history, and evaluation scores on this device."
+        >
+          Start Over
         </button>
       </header>
 
@@ -158,7 +169,6 @@ function App() {
         <WeeklyPlanView
           weeklyPlan={state.weeklyPlan}
           onToggleTask={(taskId, checked) => setState((currentState) => markWeeklyTask(currentState, taskId, checked))}
-          onResetWeekly={handleResetWeekly}
         />
       ) : null}
 
@@ -173,7 +183,13 @@ function App() {
               onFinish={handleFinish}
             />
           ) : (
-            <QuizSetup config={quizConfig} onConfigChange={setQuizConfig} onStart={handleStartQuiz} />
+            <QuizSetup
+              config={quizConfig}
+              onConfigChange={setQuizConfig}
+              onStart={handleStartQuiz}
+              fullExamDefaultCount={FULL_EXAM_DEFAULT_COUNT}
+              focusedDefaultCount={FOCUSED_DEFAULT_COUNT}
+            />
           )}
           {lastResult ? (
             <ResultsPanel
@@ -189,7 +205,13 @@ function App() {
       ) : null}
 
       {view === 'progress' ? (
-        <ProgressView sessionHistory={state.sessionHistory} topicPerformance={state.topicPerformance} />
+        <ProgressView
+          sessionHistory={state.sessionHistory}
+          topicPerformance={state.topicPerformance}
+          weeklyPlan={state.weeklyPlan}
+          onOpenWeeklyPlan={() => setView('weekly')}
+          onPracticeTopic={handlePracticeRecommendation}
+        />
       ) : null}
     </main>
   )

@@ -221,3 +221,65 @@ button:disabled {
     flex-direction: column;
   }
 }
+
+
+.toggle-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid #c9dadd;
+  border-radius: 999px;
+  padding: 0.4rem 0.7rem;
+  background: #f7fcfd;
+}
+
+.help-text {
+  color: #486170;
+  font-size: 0.85rem;
+}
+
+.chart-panel {
+  background: #f8fbff;
+  border: 1px solid #dbe7f2;
+  border-radius: 0.75rem;
+  padding: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.progress-track {
+  height: 0.9rem;
+  background: #e4edf3;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-track.slim {
+  height: 0.55rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0c8da2, #4bbf9f);
+}
+
+.domain-bars {
+  list-style: none;
+  padding-left: 0;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.domain-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+}
+
+.inline-link {
+  border: none;
+  background: transparent;
+  color: #0b6f85;
+  padding: 0;
+  text-decoration: underline;
+}

@@ -28,3 +28,14 @@
 - Preserve minimum 80% unit/component coverage.
 - Add unit tests for business logic changes.
 - Add or update Playwright tests for user-facing flows.
+
+## Merge Strategy
+
+This repository is configured for **squash-only merges** via `.github/settings.yml` when the Probot Settings app (or equivalent repository-settings automation) is enabled in GitHub.
+
+- `allow_squash_merge: true`
+- `allow_merge_commit: false`
+- `allow_rebase_merge: false`
+
+If settings automation is not installed, an admin must enable these options manually in GitHub repository settings.
+
