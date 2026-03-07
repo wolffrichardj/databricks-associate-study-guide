@@ -30,3 +30,12 @@ If a change only affects one page, still try to include the full set above when 
 - Start/attach to the local app, navigate to each page, and save artifacts with stable names.
 - Reuse consistent viewport sizing to make before/after comparisons easier.
 
+## Product context requirements (mandatory)
+
+Before implementing non-trivial changes, the coding agent must review the project specs for intent/scope alignment:
+
+- Start at `specs/README.md`.
+- Read `specs/application-goal.md` for mission and success criteria.
+- Read `specs/feature-scope.md` for in-scope/out-of-scope boundaries.
+
+If a requested change appears to conflict with the documented product goal or scope, call it out explicitly in PR notes and the final summary.
