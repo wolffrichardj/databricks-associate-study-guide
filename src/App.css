@@ -1,5 +1,5 @@
 :root {
-  font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
   color: #102531;
   background: linear-gradient(130deg, #f8fcff 0%, #ebf5f6 45%, #fefbf2 100%);
 }
@@ -150,7 +150,7 @@ label {
   gap: 0.3rem;
 }
 
-input[type='number'],
+input[type="number"],
 select {
   width: 100%;
   border: 1px solid #c4d3d8;
@@ -222,7 +222,6 @@ button:disabled {
   }
 }
 
-
 .toggle-chip {
   display: inline-flex;
   align-items: center;
@@ -237,7 +236,6 @@ button:disabled {
   color: #486170;
   font-size: 0.85rem;
 }
-
 
 .question-count-field {
   width: fit-content;
@@ -312,10 +310,68 @@ button:disabled {
   text-decoration: underline;
 }
 
-
 .hero-summary {
   display: grid;
   gap: 0.75rem;
+}
+
+.quiz-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.quiz-question-text {
+  font-size: 1.02rem;
+  line-height: 1.5;
+}
+
+.choice-item {
+  align-items: flex-start;
+}
+
+.choice-item input[type="radio"] {
+  margin-top: 0.2rem;
+}
+
+.results-panel > button {
+  margin-top: 1rem;
+}
+
+.incorrect-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.incorrect-item {
+  border: 1px solid #efc0c0;
+  background: #fff7f7;
+  border-radius: 0.6rem;
+  padding: 0.7rem;
+}
+
+.incorrect-item p {
+  margin: 0 0 0.45rem;
+}
+
+.incorrect-item p:last-child {
+  margin-bottom: 0;
+}
+
+.answer-explanation {
+  color: #3a5563;
+  font-size: 0.92rem;
+}
+
+.result-resource-links {
+  margin-top: 0.4rem;
+  margin-bottom: 0.3rem;
+}
+
+.results-back-button {
+  margin-top: 0.75rem;
 }
 
 .hero-summary h2,
