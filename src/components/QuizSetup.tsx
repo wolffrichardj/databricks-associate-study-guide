@@ -16,8 +16,13 @@ export function QuizSetup({
   fullExamDefaultCount,
   focusedDefaultCount,
 }: QuizSetupProps) {
+  const questionCountHint =
+    config.mode === 'overall_skills'
+      ? `Default: ${fullExamDefaultCount} questions for a realistic full test cadence.`
+      : `Default: ${focusedDefaultCount} questions for efficient targeted practice.`
+
   return (
-    <section className="panel">
+    <section className="panel" data-testid="quiz-setup">
       <h2>Practice Wizard</h2>
       <p>Choose targeted review by topic/domain or run a full-length exam simulation.</p>
 
@@ -35,7 +40,7 @@ export function QuizSetup({
               })
             }
           />
-          Focused Topic Mode
+          Focused Topic
         </label>
         <label className="toggle-chip">
           <input
@@ -52,7 +57,7 @@ export function QuizSetup({
               })
             }
           />
-          Full Test Simulation
+          Full Test
         </label>
       </div>
 
@@ -106,10 +111,21 @@ export function QuizSetup({
         </div>
       ) : null}
 
-      <label>
-        Number of questions
+      <label className="question-count-field">
+        <span className="field-title-row">
+          <span>Questions</span>
+          <span
+            className="hint-icon"
+            role="img"
+            aria-label="Question count default information"
+            title={questionCountHint}
+          >
+            ⓘ
+          </span>
+        </span>
         <input
           data-testid="question-count"
+          className="question-count-input"
           type="number"
           min={5}
           max={60}
@@ -121,14 +137,9 @@ export function QuizSetup({
             })
           }
         />
-        <small className="help-text">
-          {config.mode === 'overall_skills'
-            ? `Default is ${fullExamDefaultCount} questions to mirror a realistic full exam cadence. Adjust as needed.`
-            : `Default is ${focusedDefaultCount} questions for efficient targeted practice.`}
-        </small>
       </label>
 
-      <button type="button" onClick={onStart} data-testid="start-quiz">
+      <button type="button" className="quiz-start-button" onClick={onStart} data-testid="start-quiz">
         Start Session
       </button>
     </section>

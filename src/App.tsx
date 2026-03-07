@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { QUIZ_QUESTIONS } from './data/questions'
+import { EXAM_DOMAINS, TOPICS } from './data/exam'
 import { createSession, mergeTopicPerformance, calculateSessionResult } from './lib/quiz'
 import {
   completeSession,
@@ -11,7 +12,7 @@ import {
   setActiveSession,
 } from './lib/storage'
 import { buildRecommendations } from './lib/recommendations'
-import type { PersistedAppState, QuizSessionConfig, SessionResult } from './types'
+import type { PersistedAppState, QuizSessionConfig, SessionResult, TopicPerformance } from './types'
 import { NavTabs, type AppView } from './components/NavTabs'
 import { WeeklyPlanView } from './components/WeeklyPlanView'
 import { QuizSetup } from './components/QuizSetup'
@@ -27,9 +28,28 @@ const DEFAULT_QUIZ_CONFIG: QuizSessionConfig = {
   questionCount: FOCUSED_DEFAULT_COUNT,
 }
 
+
+const DOMAIN_HERO_LABELS: Record<string, string> = {
+  platform: 'Platform',
+  ingestion: 'Dev + Ingestion',
+  processing: 'Processing',
+  production: 'Production',
+  governance: 'Governance',
+}
+
+const VIEW_QUERY_KEY = 'view'
+const DEFAULT_VIEW: AppView = 'weekly'
+const ALLOWED_VIEWS: AppView[] = ['weekly', 'quiz']
+
+const getInitialView = (): AppView => {
+  const params = new URLSearchParams(window.location.search)
+  const urlView = params.get(VIEW_QUERY_KEY)
+  return ALLOWED_VIEWS.includes(urlView as AppView) ? (urlView as AppView) : DEFAULT_VIEW
+}
+
 function App() {
   const [state, setState] = useState<PersistedAppState>(() => loadState())
-  const [view, setView] = useState<AppView>('weekly')
+  const [view, setView] = useState<AppView>(getInitialView)
   const [quizConfig, setQuizConfig] = useState<QuizSessionConfig>(DEFAULT_QUIZ_CONFIG)
   const [lastResult, setLastResult] = useState<SessionResult>()
 
@@ -37,9 +57,45 @@ function App() {
     saveState(state)
   }, [state])
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    params.set(VIEW_QUERY_KEY, view)
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`)
+  }, [view])
+
   const questionMap = useMemo(() => new Map(QUIZ_QUESTIONS.map((question) => [question.id, question])), [])
   const recommendations = useMemo(
     () => buildRecommendations(state.topicPerformance),
+    [state.topicPerformance],
+  )
+
+  const completedWeeklyTasks = state.weeklyPlan.tasksProgress.filter((task) => task.checked).length
+  const totalWeeklyTasks = state.weeklyPlan.tasksProgress.length
+  const weeklyCompletion = Math.round((completedWeeklyTasks / Math.max(totalWeeklyTasks, 1)) * 100)
+
+  const domainSignals = useMemo(
+    () =>
+      EXAM_DOMAINS.map((domain) => {
+        const topicIds = TOPICS.filter((topic) => topic.domainId === domain.id).map((topic) => topic.id)
+        const entries = topicIds
+          .map((topicId) => state.topicPerformance[topicId])
+          .filter((entry): entry is TopicPerformance => Boolean(entry))
+
+        if (entries.length === 0) {
+          return {
+            domainId: domain.id,
+            name: domain.name,
+            accuracy: 0,
+          }
+        }
+
+        const avg = entries.reduce((sum, entry) => sum + entry.accuracy, 0) / entries.length
+        return {
+          domainId: domain.id,
+          name: domain.name,
+          accuracy: Math.round(avg * 100),
+        }
+      }),
     [state.topicPerformance],
   )
 
@@ -162,6 +218,33 @@ function App() {
           Start Over
         </button>
       </header>
+
+      {view !== 'quiz' ? (
+        <section className="hero-summary panel" data-testid="progress-hero">
+          <h2>Study Plan Completion</h2>
+          <div className="progress-track" role="img" aria-label={`Weekly completion ${weeklyCompletion}%`}>
+            <div className="progress-fill" style={{ width: `${weeklyCompletion}%` }} />
+          </div>
+          <p className="stat-text">
+            {completedWeeklyTasks} of {totalWeeklyTasks} checklist items complete ({weeklyCompletion}%).
+          </p>
+
+          <h3>Knowledge Area Confidence</h3>
+          <ul className="domain-bars hero-domain-bars">
+            {domainSignals.map((domain) => (
+              <li key={domain.domainId}>
+                <div className="domain-row compact">
+                  <span>{DOMAIN_HERO_LABELS[domain.domainId] ?? domain.name}</span>
+                  <span>{domain.accuracy}%</span>
+                </div>
+                <div className="progress-track slim" aria-hidden="true">
+                  <div className="progress-fill" style={{ width: `${domain.accuracy}%` }} />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <NavTabs view={view} onChange={setView} />
 

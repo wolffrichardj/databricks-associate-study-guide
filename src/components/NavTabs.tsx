@@ -10,7 +10,6 @@ interface NavTabsProps {
 const TABS: Array<{ id: AppView; label: string }> = [
   { id: 'weekly', label: 'Weekly Plan' },
   { id: 'quiz', label: 'Quiz' },
-  { id: 'progress', label: 'Progress' },
 ]
 
 export function NavTabs({ view, onChange }: NavTabsProps) {
