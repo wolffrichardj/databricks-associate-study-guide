@@ -8,6 +8,7 @@ repository:
   allow_rebase_merge: false
 
   # Hygiene: remove merged topic branches automatically.
+  # Note: this applies only when repository settings are synced (e.g., Probot Settings app).
   delete_branch_on_merge: true
 
 branches:
