@@ -53,6 +53,14 @@ Lightweight React + TypeScript study app for Databricks Data Engineer Associate 
 - App state is stored in local storage under a versioned key for same-device resume.
 - No backend/auth is used in v1.
 
+## Versioning and Beta Compatibility Note
+
+- The app is currently in an internal **v1 beta** phase.
+- While in beta, we explicitly allow a **start-over** outcome for in-progress quiz sessions after internal updates.
+- During this phase, we prioritize rapid iteration on quiz content/session behavior over strict backward compatibility management for persisted local session state.
+- In practice, if question identifiers or saved session formats change, users may need to start a quiz over after refresh.
+- Before public release, we will revisit and harden compatibility/migration expectations for persisted session data.
+
 ## CI
 
 GitHub Actions workflow runs:
