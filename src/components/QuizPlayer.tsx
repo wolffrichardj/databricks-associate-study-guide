@@ -1,16 +1,24 @@
-import type { QuizQuestion, SessionState } from '../types'
+import type { QuizQuestion, SessionState } from "../types";
 
 interface QuizPlayerProps {
-  session: SessionState
-  questions: QuizQuestion[]
-  onAnswer: (questionId: string, choiceId: string) => void
-  onNext: () => void
-  onFinish: () => void
+  session: SessionState;
+  questions: QuizQuestion[];
+  onAnswer: (questionId: string, choiceId: string) => void;
+  onNext: () => void;
+  onFinish: () => void;
 }
 
-export function QuizPlayer({ session, questions, onAnswer, onNext, onFinish }: QuizPlayerProps) {
-  const activeQuestionId = session.questionIds[session.currentIndex]
-  const activeQuestion = questions.find((question) => question.id === activeQuestionId)
+export function QuizPlayer({
+  session,
+  questions,
+  onAnswer,
+  onNext,
+  onFinish,
+}: QuizPlayerProps) {
+  const activeQuestionId = session.questionIds[session.currentIndex];
+  const activeQuestion = questions.find(
+    (question) => question.id === activeQuestionId,
+  );
 
   if (!activeQuestion) {
     return (
@@ -18,18 +26,18 @@ export function QuizPlayer({ session, questions, onAnswer, onNext, onFinish }: Q
         <h2>Quiz Session Error</h2>
         <p>Question not found in current bank.</p>
       </section>
-    )
+    );
   }
 
-  const selectedChoiceId = session.answers[activeQuestion.id]
-  const isLastQuestion = session.currentIndex >= session.questionIds.length - 1
+  const selectedChoiceId = session.answers[activeQuestion.id];
+  const isLastQuestion = session.currentIndex >= session.questionIds.length - 1;
 
   return (
     <section className="panel" data-testid="quiz-player">
       <h2>
         Question {session.currentIndex + 1} of {session.questionIds.length}
       </h2>
-      <p>{activeQuestion.prompt}</p>
+      <p className="quiz-question-text">{activeQuestion.prompt}</p>
 
       <div className="choice-list">
         {activeQuestion.choices.map((choice) => (
@@ -57,5 +65,5 @@ export function QuizPlayer({ session, questions, onAnswer, onNext, onFinish }: Q
         )}
       </div>
     </section>
-  )
+  );
 }
