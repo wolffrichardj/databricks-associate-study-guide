@@ -182,7 +182,7 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     topicId: "auto-loader",
     domainId: "ingestion",
     prompt:
-      "A data engineer wants Auto Loader to add newly discovered columns to the schema but fail the stream if a data type changes. Which `cloudFiles.schemaEvolutionMode` setting should they use?",
+      "A data engineer wants Auto Loader to automatically evolve the schema when new columns are discovered in the source files. Which `cloudFiles.schemaEvolutionMode` setting should they use?",
     choices: [
       "`addNewColumns`",
       "`rescue`",
@@ -191,7 +191,7 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     ],
     correctIndex: 0,
     explanation:
-      "The `addNewColumns` mode is the default when a schema is not provided. It adds new columns but fails the stream if it detects a data type mismatch for existing columns. The `rescue` mode would put new columns in a rescued data column rather than evolving the schema.",
+      "The `addNewColumns` mode is the default when a schema is inferred. It evolves the schema by adding newly discovered columns. The `rescue` mode puts new columns in a rescued data column rather than evolving the schema, and `failOnNewColumns` fails the stream without evolving the schema.",
     resourceIds: ["docs-autoloader", "academy-ingestion"],
     difficulty: "medium",
   },
