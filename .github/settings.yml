@@ -1,21 +1,28 @@
-# Repository settings managed-as-code.
-# Requires the Probot Settings app (or compatible automation) to apply.
-# https://github.com/probot/settings
-
 repository:
+  name: databricks-associate-study-guide
+  default_branch: main
+
+  # Keep history clean and predictable.
   allow_squash_merge: true
   allow_merge_commit: false
   allow_rebase_merge: false
+
+  # Hygiene: remove merged topic branches automatically.
   delete_branch_on_merge: true
 
 branches:
   - name: main
     protection:
-      required_pull_request_reviews:
-        required_approving_review_count: 1
-      required_status_checks:
-        strict: true
-        contexts:
-          - ci
+      # Merge to main through pull requests only.
+      required_pull_request_reviews: null
+      required_status_checks: null
       enforce_admins: false
       restrictions: null
+
+      # Basic protections
+      allow_force_pushes: false
+      allow_deletions: false
+
+      # Minimal hygiene guardrails
+      required_linear_history: true
+      required_conversation_resolution: true
