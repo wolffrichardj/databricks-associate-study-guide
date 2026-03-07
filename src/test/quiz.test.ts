@@ -53,3 +53,22 @@ describe("createSession", () => {
     expect(repeated.length).toBeLessThan(session.questionIds.length);
   });
 });
+
+describe("question bank quality", () => {
+  it("has unique question IDs and at least 15 questions per topic", () => {
+    const ids = QUIZ_QUESTIONS.map((question) => question.id);
+    expect(new Set(ids).size).toBe(ids.length);
+
+    const countsByTopic = QUIZ_QUESTIONS.reduce<Record<string, number>>(
+      (acc, question) => {
+        acc[question.topicId] = (acc[question.topicId] ?? 0) + 1;
+        return acc;
+      },
+      {},
+    );
+
+    Object.values(countsByTopic).forEach((count) => {
+      expect(count).toBeGreaterThanOrEqual(15);
+    });
+  });
+});
