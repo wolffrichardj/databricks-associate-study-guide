@@ -39,3 +39,15 @@ This repository is configured for **squash-only merges** via `.github/settings.y
 
 If settings automation is not installed, an admin must enable these options manually in GitHub repository settings.
 
+## Main Branch Protection Baseline
+
+`main` protections are declared in `.github/settings.yml` and are intentionally lightweight:
+
+- Pull requests are required to merge to `main`.
+- Force pushes are disabled.
+- Branch deletion on `main` is disabled.
+- Linear history is required (compatible with squash-only merges).
+- Conversation resolution is required before merge.
+- Auto-delete merged branches is enabled at the repository level.
+
+These settings are a minimal hygiene baseline and intentionally do **not** require PR approvals.
