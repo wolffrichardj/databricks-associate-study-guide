@@ -28,7 +28,11 @@ jobs:
               });
               core.info(`Deleted merged branch: ${branch}`);
             } catch (error) {
-              if (error.status === 404) {
+              const referenceMissing =
+                (error.status === 404 || error.status === 422) &&
+                error.response?.data?.message === 'Reference does not exist';
+
+              if (referenceMissing) {
                 core.info(`Branch already deleted, skipping: ${branch}`);
                 return;
               }
