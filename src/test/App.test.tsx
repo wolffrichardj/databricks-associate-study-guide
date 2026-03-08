@@ -62,6 +62,28 @@ describe("App", () => {
     );
   });
 
+  it("shows a warning toast and caps quiz length when requested count exceeds available questions", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: "Quiz" }));
+    await user.selectOptions(screen.getByTestId("topic-select"), "auto-loader");
+    await user.clear(screen.getByTestId("question-count"));
+    await user.type(screen.getByTestId("question-count"), "60");
+
+    await user.click(screen.getByTestId("start-quiz"));
+
+    expect(
+      screen.getByText(/there are only \d+ questions in this section/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /question 1 of/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: /question 1 of 60/i }),
+    ).not.toBeInTheDocument();
+  });
+
   it("keeps selected tab after refresh via URL query", async () => {
     const user = userEvent.setup();
     const { unmount } = render(<App />);

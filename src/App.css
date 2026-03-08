@@ -21,6 +21,22 @@ body {
   gap: 1rem;
 }
 
+.toast {
+  position: sticky;
+  top: 0.8rem;
+  z-index: 10;
+  border-radius: 0.6rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid;
+  font-weight: 600;
+}
+
+.toast-warning {
+  background: #fff7e6;
+  border-color: #e8c884;
+  color: #7b5808;
+}
+
 .app-header {
   display: flex;
   gap: 1rem;
