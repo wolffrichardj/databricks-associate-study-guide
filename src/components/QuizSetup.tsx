@@ -21,7 +21,6 @@ export function QuizSetup({
   focusedMaxCount,
 }: QuizSetupProps) {
   const maxQuestionCount = 60
-  const poolLimit = config.mode === 'overall_skills' ? fullExamMaxCount : focusedMaxCount
   const minQuestionCount = Math.min(5, maxQuestionCount)
   const questionCountHint =
     config.mode === 'overall_skills'
