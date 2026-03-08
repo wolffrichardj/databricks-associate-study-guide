@@ -23,13 +23,13 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
       "Which Delta Lake capability most directly supports ACID reliability over plain Parquet files?",
     choices: [
       "Object tagging",
-      "Transaction log",
+      "The `_delta_log` transaction log",
       "Notebook widgets",
       "Job clusters",
     ],
     correctIndex: 1,
     explanation:
-      "Delta tables use a transaction log to coordinate atomic, consistent updates.",
+      "Delta tables use a transaction log (the `_delta_log` directory) to coordinate atomic, consistent updates and guarantee ACID compliance.",
     resourceIds: ["docs-delta", "exam-guide"],
     difficulty: "easy",
   },
@@ -38,15 +38,15 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     topicId: "delta-basics",
     domainId: "platform",
     prompt:
-      "Which Delta Lake feature lets you read historical versions of a table?",
+      "A data engineer wants to read an older version of a Delta table to recover accidentally deleted data. Which feature should they use?",
     choices: [
-      "Checkpointing",
-      "Time travel",
-      "Unity Catalog lineage",
-      "Job retries",
+      "Spark Structured Streaming checkpointing",
+      "Delta Lake time travel (`VERSION AS OF` or `TIMESTAMP AS OF`)",
+      "Unity Catalog data lineage",
+      "Delta Live Tables expectations",
     ],
     correctIndex: 1,
-    explanation: "Delta Lake supports time travel by version or timestamp.",
+    explanation: "Delta Lake supports time travel by version or timestamp. For example: `SELECT * FROM my_table VERSION AS OF 5`.",
     resourceIds: ["docs-delta", "exam-guide"],
     difficulty: "medium",
   },
@@ -55,16 +55,16 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     topicId: "delta-basics",
     domainId: "platform",
     prompt:
-      "What happens by default when incoming data has incompatible schema for a Delta table write?",
+      "What happens by default when you try to append data to a Delta table, but the incoming DataFrame has an extra column that is not present in the target table?",
     choices: [
-      "Write succeeds silently",
-      "Write fails due to schema enforcement",
-      "Rows are dropped automatically",
-      "Table is re-created",
+      "The write succeeds and the new column is automatically added to the schema.",
+      "The write fails due to Delta Lake's schema enforcement.",
+      "The extra column is silently dropped and the rest of the data is appended.",
+      "The target table is overwritten completely.",
     ],
     correctIndex: 1,
     explanation:
-      "Delta enforces schema compatibility and rejects incompatible writes by default.",
+      "Delta enforces strict schema compatibility by default and rejects incompatible writes. To allow the new column, you must explicitly enable schema evolution (e.g., `.option(\"mergeSchema\", \"true\")`).",
     resourceIds: ["docs-delta", "exam-guide"],
     difficulty: "medium",
   },
@@ -73,16 +73,16 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     topicId: "delta-basics",
     domainId: "platform",
     prompt:
-      "For large Delta tables with selective filters, which maintenance pattern can improve read performance?",
+      "A Delta table is queried frequently using filters on a high-cardinality column like `customer_id`. Which command will optimally layout the data files to improve read performance for these queries?",
     choices: [
-      "Disable checkpointing",
-      "OPTIMIZE with ZORDER",
-      "Use a larger SQL warehouse only",
-      "Convert table to CSV",
+      "`VACUUM RETAIN 0 HOURS`",
+      "`OPTIMIZE table_name ZORDER BY (customer_id)`",
+      "`ANALYZE TABLE table_name COMPUTE STATISTICS`",
+      "`ALTER TABLE table_name CLUSTER BY (customer_id)`",
     ],
     correctIndex: 1,
     explanation:
-      "Compaction with OPTIMIZE and ZORDER can improve data skipping for selective queries.",
+      "Compaction with `OPTIMIZE` and `ZORDER BY` colocates related information in the same set of files, significantly improving data skipping for queries that filter on the Z-ordered columns.",
     resourceIds: ["docs-delta", "exam-guide"],
     difficulty: "hard",
   },
@@ -93,16 +93,16 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     topicId: "workspace-basics",
     domainId: "platform",
     prompt:
-      "Which statement best describes Databricks Free Edition for exam prep?",
+      "Which statement best describes Databricks Community Edition?",
     choices: [
       "It is a no-cost workspace suitable for guided hands-on practice.",
       "It requires an enterprise contract to run notebooks.",
-      "It only supports SQL and blocks Python notebooks.",
-      "It cannot run workflows.",
+      "It relies on the customer's cloud account to provision infrastructure.",
+      "It restricts usage strictly to Databricks SQL clusters.",
     ],
     correctIndex: 0,
     explanation:
-      "Free Edition is designed as a no-cost hands-on learning environment.",
+      "Community Edition is designed as a no-cost hands-on workspace for learning, prototyping, and collaborative exploration.",
     resourceIds: ["free-edition", "exam-guide"],
     difficulty: "easy",
   },
@@ -113,13 +113,13 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     prompt: "Where should a team keep notebooks for versioned collaboration?",
     choices: [
       "Personal user folder only",
-      "Repos backed by Git",
+      "Repos (Git Folders) backed by Git",
       "Cluster event logs",
       "SQL warehouse history",
     ],
     correctIndex: 1,
     explanation:
-      "Databricks Repos integrate notebooks with Git workflows for collaboration.",
+      "Databricks Repos (now called Git Folders) integrate notebooks directly with Git workflows for collaboration.",
     resourceIds: ["free-edition", "exam-guide"],
     difficulty: "medium",
   },
@@ -165,10 +165,15 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     key: "cloudfiles-source",
     topicId: "auto-loader",
     domainId: "ingestion",
-    prompt: "In Databricks, Auto Loader is configured using which source key?",
-    choices: ["deltaFiles", "lakeflowFiles", "cloudFiles", "streamFiles"],
+    prompt: "When writing a PySpark Structured Streaming script to incrementally ingest JSON files from S3, which format must be specified to use Auto Loader?",
+    choices: [
+      "`spark.readStream.format(\"json\")`",
+      "`spark.readStream.format(\"delta\")`",
+      "`spark.readStream.format(\"cloudFiles\")`",
+      "`spark.readStream.format(\"autoLoader\")`"
+    ],
     correctIndex: 2,
-    explanation: "Auto Loader uses the cloudFiles source.",
+    explanation: "Auto Loader incrementally and efficiently processes new data files as they arrive in cloud storage. It is enabled by specifying the `cloudFiles` format in the `readStream` command.",
     resourceIds: ["docs-autoloader", "academy-ingestion"],
     difficulty: "easy",
   },
@@ -177,16 +182,16 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     topicId: "auto-loader",
     domainId: "ingestion",
     prompt:
-      "Which option controls how Auto Loader handles newly detected columns?",
+      "A data engineer wants Auto Loader to automatically evolve the schema when new columns are discovered in the source files. Which `cloudFiles.schemaEvolutionMode` setting should they use?",
     choices: [
-      "autoLoader.mode",
-      "cloudFiles.schemaEvolutionMode",
-      "delta.autoMerge",
-      "spark.sql.adaptive.enabled",
+      "`addNewColumns`",
+      "`rescue`",
+      "`failOnNewColumns`",
+      "`none`"
     ],
-    correctIndex: 1,
+    correctIndex: 0,
     explanation:
-      "schemaEvolutionMode controls behavior for evolving source schemas.",
+      "The `addNewColumns` mode is the default when a schema is inferred. It evolves the schema by adding newly discovered columns. The `rescue` mode puts new columns in a rescued data column rather than evolving the schema, and `failOnNewColumns` fails the stream without evolving the schema.",
     resourceIds: ["docs-autoloader", "academy-ingestion"],
     difficulty: "medium",
   },
@@ -212,16 +217,16 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     key: "rescued-data",
     topicId: "auto-loader",
     domainId: "ingestion",
-    prompt: "What is the purpose of the rescued data column in Auto Loader?",
+    prompt: "A JSON file ingested by Auto Loader contains the field `{\"customer_id\": \"ABC\"}`, but the inferred schema expects an integer. If the rescued data column is configured, what happens to this record?",
     choices: [
-      "Store malformed/unparsed fields for review",
-      "Persist SQL warehouse metrics",
-      "Track Unity grants",
-      "Replace Delta logs",
+      "The stream fails and the file is moved to a dead-letter queue.",
+      "The record is written with a `NULL` for `customer_id` and the original field is preserved in the `_rescued_data` column.",
+      "The `customer_id` is cast to a string and added as a new column.",
+      "The entire JSON record is skipped."
     ],
-    correctIndex: 0,
+    correctIndex: 1,
     explanation:
-      "Rescued data captures unexpected fields/records for troubleshooting.",
+      "Auto Loader's rescued data column (`_rescued_data` by default) captures data that doesn't match the schema, such as type mismatches or unexpected columns, while parsing the rest of the record normally.",
     resourceIds: ["docs-autoloader", "academy-ingestion"],
     difficulty: "hard",
   },
@@ -293,7 +298,7 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     ],
     correctIndex: 1,
     explanation:
-      "Low-cardinality, query-aligned partitions reduce unnecessary scanning.",
+      "Low-cardinality partitions avoid over-fragmentation while aiding data skipping. Note: For tables under 1TB, Databricks recommends Liquid Clustering or native data skipping instead of explicit partitioning.",
     resourceIds: ["docs-autoloader", "academy-ingestion"],
     difficulty: "medium",
   },
@@ -304,63 +309,68 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     topicId: "spark-sql",
     domainId: "processing",
     prompt:
-      "For Associate exam questions, which language does Databricks state is used where possible?",
-    choices: ["Scala", "R", "SQL", "Java"],
-    correctIndex: 2,
+      "A developer is writing a PySpark script and needs to convert a string column `date_str` to a DateType column `order_date`. Which function from `pyspark.sql.functions` should they use?",
+    choices: [
+      "`to_date(col(\"date_str\"), \"yyyy-MM-dd\")`",
+      "`date_format(col(\"date_str\"), \"yyyy-MM-dd\")`",
+      "`cast(col(\"date_str\"), \"date\")`",
+      "`from_unixtime(col(\"date_str\"))`"
+    ],
+    correctIndex: 0,
     explanation:
-      "Exam guidance indicates SQL when possible, then Python otherwise.",
+      "The `to_date` function converts a string to a DateType according to a specified format. The `date_format` function does the opposite: it formats a date or timestamp into a string.",
     resourceIds: ["exam-guide", "academy-pipelines"],
-    difficulty: "easy",
+    difficulty: "medium",
   },
   {
     key: "left-join",
     topicId: "spark-sql",
     domainId: "processing",
-    prompt: "What does a LEFT JOIN return in Spark SQL?",
+    prompt: "Given two DataFrames, `df_customers` and `df_orders`, which PySpark command correctly performs a left join to find customers without orders?",
     choices: [
-      "Only matching rows from both tables",
-      "All rows from left table plus matching right rows",
-      "All rows from both tables always",
-      "Only non-matching right rows",
+      "`df_customers.join(df_orders, \"customer_id\", \"outer\").filter(col(\"order_id\").isNull())`",
+      "`df_customers.join(df_orders, \"customer_id\", \"left\").filter(col(\"order_id\").isNull())`",
+      "`df_customers.join(df_orders, \"customer_id\", \"inner\").filter(col(\"order_id\").isNull())`",
+      "`df_customers.join(df_orders, \"customer_id\", \"right\").filter(col(\"order_id\").isNull())`"
     ],
     correctIndex: 1,
-    explanation: "LEFT JOIN preserves all rows from the left side.",
+    explanation: "A `left` join preserves all rows from the left DataFrame (`df_customers`). Filtering where `order_id` is null identifies customers who have no corresponding records in the right DataFrame.",
     resourceIds: ["exam-guide", "academy-pipelines"],
-    difficulty: "easy",
+    difficulty: "medium",
   },
   {
     key: "window-ranking",
     topicId: "spark-sql",
     domainId: "processing",
     prompt:
-      "Which SQL construct is most appropriate to rank records within each customer group?",
+      "A developer needs to find the single most recent order for each customer. Which SQL window function and clause should they use?",
     choices: [
-      "CROSS JOIN",
-      "Window function with PARTITION BY",
-      "UNION ALL",
-      "CREATE VIEW",
+      "`ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC)`",
+      "`RANK() OVER (PARTITION BY customer_id ORDER BY order_date DESC)`",
+      "`MAX(order_date) OVER (PARTITION BY customer_id)`",
+      "`FIRST_VALUE(order_id) OVER (ORDER BY customer_id, order_date DESC)`",
     ],
-    correctIndex: 1,
+    correctIndex: 0,
     explanation:
-      "Window functions support per-group ranking and analytic calculations.",
+      "`ROW_NUMBER()` assigns a unique ordering within each customer partition. Filtering to row number 1 returns one most-recent row per customer, breaking ties unlike `RANK()`.",
     resourceIds: ["exam-guide", "academy-pipelines"],
-    difficulty: "medium",
+    difficulty: "hard",
   },
   {
     key: "group-by",
     topicId: "spark-sql",
     domainId: "processing",
-    prompt: "To aggregate revenue by day, which clause is essential?",
+    prompt: "In Spark SQL, what is the effect of using the `GROUP BY` clause with the `CUBE` operator instead of the `ROLLUP` operator on two columns, `region` and `store`?",
     choices: [
-      "ORDER BY only",
-      "GROUP BY transaction_date",
-      "LIMIT 1",
-      "WINDOW current_row",
+      "`CUBE` only computes subtotals for `region`, while `ROLLUP` computes subtotals for both.",
+      "`CUBE` computes aggregations for all possible combinations of `region` and `store`, while `ROLLUP` computes aggregations hierarchically (`(region, store)`, `(region)`, `()`).",
+      "`CUBE` requires a window function, but `ROLLUP` does not.",
+      "There is no difference; they produce identical output."
     ],
     correctIndex: 1,
-    explanation: "GROUP BY defines the granularity of aggregation output.",
+    explanation: "`CUBE` generates subtotals for all permutations of the specified columns. `ROLLUP` only generates subtotals hierarchically from left to right.",
     resourceIds: ["exam-guide", "academy-pipelines"],
-    difficulty: "easy",
+    difficulty: "hard",
   },
 
   // Processing — Streaming
@@ -387,10 +397,10 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     topicId: "streaming",
     domainId: "processing",
     prompt:
-      "Which output mode is suitable for continuously updated aggregate results?",
+      "Which output mode is required to emit the full aggregate result table each trigger?",
     choices: ["Append", "Complete", "Ignore", "Static"],
     correctIndex: 1,
-    explanation: "Complete mode emits the full aggregate result each trigger.",
+    explanation: "Complete mode emits the full aggregate result each trigger. Append is the default, and Update mode only emits updated rows.",
     resourceIds: ["docs-streaming", "academy-pipelines"],
     difficulty: "medium",
   },
@@ -420,12 +430,12 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
       "Which trigger style is used to process currently available data and then stop?",
     choices: [
       "Continuous forever",
-      "availableNow / once-style trigger",
+      "`Trigger.AvailableNow`",
       "No trigger option needed",
       "Only manual reruns",
     ],
     correctIndex: 1,
-    explanation: "Available-now/once triggers process backlog and terminate.",
+    explanation: "`Trigger.AvailableNow` processes all currently available data and then stops. `Trigger.Once` is deprecated in newer Databricks Runtime versions.",
     resourceIds: ["docs-streaming", "academy-pipelines"],
     difficulty: "medium",
   },
@@ -498,6 +508,82 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
       "Ephemeral job compute can reduce idle spend and run-to-run drift.",
     resourceIds: ["docs-jobs", "academy-jobs"],
     difficulty: "medium",
+  },
+
+  // Databricks SQL (DBSQL)
+  {
+    key: "dbsql-endpoints",
+    topicId: "dbsql",
+    domainId: "platform",
+    prompt:
+      "What is the primary purpose of Serverless SQL Warehouses in Databricks SQL?",
+    choices: [
+      "To run continuously executing Structured Streaming pipelines",
+      "To provide instant compute for BI and SQL workloads without managing infrastructure",
+      "To store machine learning models in MLflow",
+      "To execute distributed training of PyTorch models",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Serverless SQL Warehouses are optimized for high-concurrency, low-latency SQL workloads like BI dashboards, abstracting away cluster management.",
+    resourceIds: ["docs-dbsql", "academy-platform"],
+    difficulty: "medium",
+  },
+  {
+    key: "dbsql-dashboards",
+    topicId: "dbsql",
+    domainId: "platform",
+    prompt:
+      "Which feature in Databricks SQL allows users to create parameterized visualizations that automatically update based on user input?",
+    choices: [
+      "Lakeflow Jobs",
+      "Delta Live Tables",
+      "Dashboard Widgets with Parameters",
+      "Unity Catalog Volumes",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Query parameters in Databricks SQL allow dashboard widgets to become interactive, updating visualizations based on selections.",
+    resourceIds: ["docs-dbsql", "academy-platform"],
+    difficulty: "easy",
+  },
+
+  // Delta Live Tables (DLT)
+  {
+    key: "dlt-expectations",
+    topicId: "dlt",
+    domainId: "processing",
+    prompt:
+      "In Delta Live Tables (DLT), what is the function of the `CONSTRAINT` (or `@dlt.expect`) clause?",
+    choices: [
+      "To define foreign key relationships between tables",
+      "To enforce data quality rules and specify handling of invalid records",
+      "To restrict user access to specific rows",
+      "To optimize the layout of data files on disk",
+    ],
+    correctIndex: 1,
+    explanation:
+      "DLT expectations define data quality rules. You can configure them to retain, drop, or fail the pipeline when data violates the constraints (`expect`, `expect or drop`, `expect or fail`).",
+    resourceIds: ["docs-dlt", "academy-pipelines"],
+    difficulty: "medium",
+  },
+  {
+    key: "dlt-streaming-tables",
+    topicId: "dlt",
+    domainId: "processing",
+    prompt:
+      "What is a key characteristic of a Streaming Table in a Delta Live Tables pipeline?",
+    choices: [
+      "It completely overwrites its destination table on every update",
+      "It only processes new data that has arrived since the last pipeline update",
+      "It is identical to a materialized view but requires manual refreshes",
+      "It cannot be used as a source for other tables in the pipeline",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Streaming tables are designed for incremental, stateful processing, only reading new data from the source exactly once.",
+    resourceIds: ["docs-dlt", "academy-pipelines"],
+    difficulty: "hard",
   },
 
   // Production — Ops
@@ -725,7 +811,7 @@ function buildVariant(
   const topicName =
     TOPICS.find((topic) => topic.id === template.topicId)?.name ??
     template.topicId;
-  const prompt = `${template.prompt} (${topicName} scenario ${variantLabel}) ${VARIANT_SUFFIXES[variantIndex]}`;
+  const prompt = `${template.prompt}\n\n*(${topicName} scenario ${variantLabel}) ${VARIANT_SUFFIXES[variantIndex]}*`;
 
   return {
     id: `${template.topicId}-${template.key}-${variantLabel.toLowerCase()}`,

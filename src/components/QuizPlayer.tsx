@@ -1,3 +1,4 @@
+import ReactMarkdown from "react-markdown";
 import type { QuizQuestion, SessionState } from "../types";
 
 interface QuizPlayerProps {
@@ -37,7 +38,9 @@ export function QuizPlayer({
       <h2>
         Question {session.currentIndex + 1} of {session.questionIds.length}
       </h2>
-      <p className="quiz-question-text">{activeQuestion.prompt}</p>
+      <div className="quiz-question-text">
+        <ReactMarkdown>{activeQuestion.prompt}</ReactMarkdown>
+      </div>
 
       <div className="choice-list">
         {activeQuestion.choices.map((choice) => (
@@ -48,7 +51,9 @@ export function QuizPlayer({
               checked={selectedChoiceId === choice.id}
               onChange={() => onAnswer(activeQuestion.id, choice.id)}
             />
-            {choice.text}
+            <div className="choice-text">
+              <ReactMarkdown>{choice.text}</ReactMarkdown>
+            </div>
           </label>
         ))}
       </div>

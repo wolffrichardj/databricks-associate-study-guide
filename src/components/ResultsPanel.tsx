@@ -1,3 +1,4 @@
+import ReactMarkdown from "react-markdown";
 import { EXAM_DOMAINS, TOPICS } from "../data/exam";
 import type { Recommendation, SessionResult } from "../types";
 
@@ -52,16 +53,21 @@ export function ResultsPanel({
         <ul className="incorrect-list">
           {result.incorrectAnswers.map((incorrect) => (
             <li key={incorrect.questionId} className="incorrect-item">
-              <p>
-                <strong>Question:</strong> {incorrect.prompt}
-              </p>
-              <p>
-                <strong>You selected:</strong> {incorrect.selectedChoice}
-              </p>
-              <p>
-                <strong>Correct answer:</strong> {incorrect.correctChoice}
-              </p>
-              <p className="answer-explanation">{incorrect.explanation}</p>
+              <div>
+                <strong>Question:</strong>{" "}
+                <ReactMarkdown components={{ p: "span" }}>{incorrect.prompt}</ReactMarkdown>
+              </div>
+              <div>
+                <strong>You selected:</strong>{" "}
+                <ReactMarkdown components={{ p: "span" }}>{incorrect.selectedChoice}</ReactMarkdown>
+              </div>
+              <div>
+                <strong>Correct answer:</strong>{" "}
+                <ReactMarkdown components={{ p: "span" }}>{incorrect.correctChoice}</ReactMarkdown>
+              </div>
+              <div className="answer-explanation">
+                <ReactMarkdown>{incorrect.explanation}</ReactMarkdown>
+              </div>
             </li>
           ))}
         </ul>
