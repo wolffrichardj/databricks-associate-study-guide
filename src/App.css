@@ -167,7 +167,7 @@ select {
 .choice-item {
   display: flex;
   gap: 0.65rem;
-  align-items: flex-start;
+  align-items: center;
   border: 1px solid #e3ecef;
   border-radius: 0.5rem;
   background: #fdfefe;
@@ -176,13 +176,17 @@ select {
 }
 
 .choice-item input[type="radio"] {
-  margin-top: 0.28rem;
+  margin-top: 0;
   flex-shrink: 0;
 }
 
 .choice-item-selected {
   background: #ebf8ef;
   border-color: #8fd1a6;
+}
+
+.choice-text p {
+  margin: 0;
 }
 
 .actions-row {
