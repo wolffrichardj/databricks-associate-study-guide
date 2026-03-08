@@ -495,3 +495,36 @@ button:disabled {
   border-radius: 0.3rem;
   padding: 0.05rem 0.25rem;
 }
+
+.results-summary-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid #dbe7f2;
+  border-radius: 0.75rem;
+  background: #f8fbff;
+  margin-bottom: 1rem;
+}
+
+.results-summary-card h2 {
+  margin: 0;
+}
+
+.results-summary-card .stat-text {
+  margin: 0;
+}
+
+.results-breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(240px, 1fr));
+  gap: 0.8rem;
+}
+
+@media (max-width: 760px) {
+  .results-breakdown-grid {
+    grid-template-columns: 1fr;
+  }
+}

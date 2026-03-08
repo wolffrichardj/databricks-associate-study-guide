@@ -75,6 +75,38 @@ describe("createSession", () => {
     expect(repeated.length).toBeLessThan(session.questionIds.length);
   });
 
+  it("maximizes template variety before repeating near-identical variants", () => {
+    const topicPool = QUIZ_QUESTIONS.filter(
+      (question) => question.topicId === "auto-loader",
+    );
+
+    const session = createSession(
+      {
+        mode: "focused_topic",
+        topicId: "auto-loader",
+        questionCount: 12,
+      },
+      topicPool,
+      { recentQuestionIds: [] },
+      88,
+    );
+
+    const pickedQuestions = session.questionIds
+      .map((id) => topicPool.find((question) => question.id === id))
+      .filter((question): question is (typeof topicPool)[number] =>
+        Boolean(question),
+      );
+
+    const distinctTemplateCount = new Set(
+      pickedQuestions.map((question) => question.templateKey),
+    ).size;
+    const availableTemplateCount = new Set(
+      topicPool.map((question) => question.templateKey),
+    ).size;
+
+    expect(distinctTemplateCount).toBe(availableTemplateCount);
+  });
+
   it("caps session size to available questions for the selected filter", () => {
     const session = createSession(
       {
