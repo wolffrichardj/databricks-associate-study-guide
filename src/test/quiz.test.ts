@@ -74,6 +74,21 @@ describe("createSession", () => {
     const repeated = session.questionIds.filter((id) => recent.includes(id));
     expect(repeated.length).toBeLessThan(session.questionIds.length);
   });
+
+  it("caps session size to available questions for the selected filter", () => {
+    const session = createSession(
+      {
+        mode: "overall_skills",
+        questionCount: 999,
+      },
+      QUIZ_QUESTIONS,
+      { recentQuestionIds: [] },
+      42,
+    );
+
+    expect(session.questionIds).toHaveLength(QUIZ_QUESTIONS.length);
+    expect(session.config.questionCount).toBe(QUIZ_QUESTIONS.length);
+  });
 });
 
 describe("question bank quality", () => {

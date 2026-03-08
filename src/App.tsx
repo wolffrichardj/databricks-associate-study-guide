@@ -98,6 +98,28 @@ function App() {
     () => new Map(QUIZ_QUESTIONS.map((question) => [question.id, question])),
     [],
   );
+  const fullExamMaxCount = QUIZ_QUESTIONS.length;
+  const fullExamDefaultCount = Math.min(
+    FULL_EXAM_DEFAULT_COUNT,
+    fullExamMaxCount,
+  );
+  const focusedQuestionPoolCount = useMemo(() => {
+    if (quizConfig.topicId) {
+      return QUIZ_QUESTIONS.filter(
+        (question) => question.topicId === quizConfig.topicId,
+      ).length;
+    }
+
+    if (quizConfig.domainId) {
+      return QUIZ_QUESTIONS.filter(
+        (question) => question.domainId === quizConfig.domainId,
+      ).length;
+    }
+
+    return QUIZ_QUESTIONS.length;
+  }, [quizConfig.domainId, quizConfig.topicId]);
+  const focusedMaxCount = Math.max(focusedQuestionPoolCount, 1);
+  const focusedDefaultCount = Math.min(FOCUSED_DEFAULT_COUNT, focusedMaxCount);
   const recommendations = useMemo(
     () => buildRecommendations(state.topicPerformance),
     [state.topicPerformance],
@@ -251,9 +273,12 @@ function App() {
   };
 
   const handlePracticeRecommendation = (topicId: string) => {
+    const topicQuestionCount = QUIZ_QUESTIONS.filter((question) => question.topicId === topicId).length
+    const topicDefaultCount = Math.min(FOCUSED_DEFAULT_COUNT, Math.max(topicQuestionCount, 1))
+
     setQuizConfig({
       mode: "focused_topic",
-      questionCount: FOCUSED_DEFAULT_COUNT,
+      questionCount: topicDefaultCount,
       topicId,
     });
     setLastResult(undefined);
@@ -262,10 +287,10 @@ function App() {
 
   const activeSessionQuestions = state.activeSession
     ? state.activeSession.questionIds
-        .map((questionId) => questionMap.get(questionId))
-        .filter((question): question is NonNullable<typeof question> =>
-          Boolean(question),
-        )
+      .map((questionId) => questionMap.get(questionId))
+      .filter((question): question is NonNullable<typeof question> =>
+        Boolean(question),
+      )
     : [];
 
   return (
@@ -364,8 +389,10 @@ function App() {
               config={quizConfig}
               onConfigChange={setQuizConfig}
               onStart={handleStartQuiz}
-              fullExamDefaultCount={FULL_EXAM_DEFAULT_COUNT}
-              focusedDefaultCount={FOCUSED_DEFAULT_COUNT}
+              fullExamDefaultCount={fullExamDefaultCount}
+              focusedDefaultCount={focusedDefaultCount}
+              fullExamMaxCount={fullExamMaxCount}
+              focusedMaxCount={focusedMaxCount}
             />
           )}
           {lastResult ? (

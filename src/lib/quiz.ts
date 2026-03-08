@@ -37,8 +37,15 @@ function filterQuestionsByConfig(
   );
 }
 
-export function clampQuestionCount(value: number): number {
-  return Math.max(MIN_QUESTIONS, Math.min(60, value || DEFAULT_QUESTION_COUNT));
+export function clampQuestionCount(value: number, maxQuestions = 60): number {
+  const boundedMax = Math.max(0, Math.floor(maxQuestions));
+  if (boundedMax === 0) {
+    return 0;
+  }
+
+  const boundedMin = Math.min(MIN_QUESTIONS, boundedMax);
+  const requestedCount = value || DEFAULT_QUESTION_COUNT;
+  return Math.max(boundedMin, Math.min(boundedMax, requestedCount));
 }
 
 function takeRandomWithoutReplacement<T>(
@@ -162,24 +169,27 @@ export function createSession(
   exposure: ExposureState,
   seed = Date.now(),
 ): SessionState {
-  const questionCount = clampQuestionCount(config.questionCount);
-
   const filteredQuestions = filterQuestionsByConfig(config, questions);
+
+  const questionCount = clampQuestionCount(
+    config.questionCount,
+    filteredQuestions.length,
+  );
 
   const selectedQuestions =
     config.mode === "overall_skills"
       ? weightedDomainPick(
-          filteredQuestions,
-          questionCount,
-          exposure.recentQuestionIds,
-          seed,
-        )
+        filteredQuestions,
+        questionCount,
+        exposure.recentQuestionIds,
+        seed,
+      )
       : selectWithoutRecent(
-          filteredQuestions,
-          exposure.recentQuestionIds,
-          questionCount,
-          seed,
-        );
+        filteredQuestions,
+        exposure.recentQuestionIds,
+        questionCount,
+        seed,
+      );
 
   return {
     config: {
