@@ -1,4 +1,3 @@
-import ReactMarkdown from "react-markdown";
 import type { QuizQuestion, SessionState } from "../types";
 
 interface QuizPlayerProps {
@@ -7,6 +6,7 @@ interface QuizPlayerProps {
   onAnswer: (questionId: string, choiceId: string) => void;
   onNext: () => void;
   onFinish: () => void;
+  onCancelQuiz: () => void;
 }
 
 export function QuizPlayer({
@@ -15,6 +15,7 @@ export function QuizPlayer({
   onAnswer,
   onNext,
   onFinish,
+  onCancelQuiz,
 }: QuizPlayerProps) {
   const activeQuestionId = session.questionIds[session.currentIndex];
   const activeQuestion = questions.find(
@@ -35,16 +36,32 @@ export function QuizPlayer({
 
   return (
     <section className="panel" data-testid="quiz-player">
-      <h2>
-        Question {session.currentIndex + 1} of {session.questionIds.length}
-      </h2>
+      <div className="quiz-header-row">
+        <h2>
+          Question {session.currentIndex + 1} of {session.questionIds.length}
+        </h2>
+        <button
+          type="button"
+          className="secondary quiz-cancel-button"
+          onClick={onCancelQuiz}
+        >
+          Cancel Quiz
+        </button>
+      </div>
       <div className="quiz-question-text">
-        <ReactMarkdown>{activeQuestion.prompt}</ReactMarkdown>
+        <p>{activeQuestion.prompt}</p>
       </div>
 
       <div className="choice-list">
         {activeQuestion.choices.map((choice) => (
-          <label key={choice.id} className="choice-item">
+          <label
+            key={choice.id}
+            className={
+              selectedChoiceId === choice.id
+                ? "choice-item choice-item-selected"
+                : "choice-item"
+            }
+          >
             <input
               type="radio"
               name={activeQuestion.id}
@@ -52,7 +69,7 @@ export function QuizPlayer({
               onChange={() => onAnswer(activeQuestion.id, choice.id)}
             />
             <div className="choice-text">
-              <ReactMarkdown>{choice.text}</ReactMarkdown>
+              <p>{choice.text}</p>
             </div>
           </label>
         ))}
