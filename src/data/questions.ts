@@ -46,7 +46,8 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
       "Delta Live Tables expectations",
     ],
     correctIndex: 1,
-    explanation: "Delta Lake supports time travel by version or timestamp. For example: `SELECT * FROM my_table VERSION AS OF 5`.",
+    explanation:
+      "Delta Lake supports time travel by version or timestamp. For example: `SELECT * FROM my_table VERSION AS OF 5`.",
     resourceIds: ["docs-delta", "exam-guide"],
     difficulty: "medium",
   },
@@ -64,7 +65,7 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     ],
     correctIndex: 1,
     explanation:
-      "Delta enforces strict schema compatibility by default and rejects incompatible writes. To allow the new column, you must explicitly enable schema evolution (e.g., `.option(\"mergeSchema\", \"true\")`).",
+      'Delta enforces strict schema compatibility by default and rejects incompatible writes. To allow the new column, you must explicitly enable schema evolution (e.g., `.option("mergeSchema", "true")`).',
     resourceIds: ["docs-delta", "exam-guide"],
     difficulty: "medium",
   },
@@ -92,8 +93,7 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     key: "free-edition-purpose",
     topicId: "workspace-basics",
     domainId: "platform",
-    prompt:
-      "Which statement best describes Databricks Community Edition?",
+    prompt: "Which statement best describes Databricks Community Edition?",
     choices: [
       "It is a no-cost workspace suitable for guided hands-on practice.",
       "It requires an enterprise contract to run notebooks.",
@@ -165,15 +165,17 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     key: "cloudfiles-source",
     topicId: "auto-loader",
     domainId: "ingestion",
-    prompt: "When writing a PySpark Structured Streaming script to incrementally ingest JSON files from S3, which format must be specified to use Auto Loader?",
+    prompt:
+      "When writing a PySpark Structured Streaming script to incrementally ingest JSON files from S3, which format must be specified to use Auto Loader?",
     choices: [
-      "`spark.readStream.format(\"json\")`",
-      "`spark.readStream.format(\"delta\")`",
-      "`spark.readStream.format(\"cloudFiles\")`",
-      "`spark.readStream.format(\"autoLoader\")`"
+      '`spark.readStream.format("json")`',
+      '`spark.readStream.format("delta")`',
+      '`spark.readStream.format("cloudFiles")`',
+      '`spark.readStream.format("autoLoader")`',
     ],
     correctIndex: 2,
-    explanation: "Auto Loader incrementally and efficiently processes new data files as they arrive in cloud storage. It is enabled by specifying the `cloudFiles` format in the `readStream` command.",
+    explanation:
+      "Auto Loader incrementally and efficiently processes new data files as they arrive in cloud storage. It is enabled by specifying the `cloudFiles` format in the `readStream` command.",
     resourceIds: ["docs-autoloader", "academy-ingestion"],
     difficulty: "easy",
   },
@@ -183,12 +185,7 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     domainId: "ingestion",
     prompt:
       "A data engineer wants Auto Loader to automatically evolve the schema when new columns are discovered in the source files. Which `cloudFiles.schemaEvolutionMode` setting should they use?",
-    choices: [
-      "`addNewColumns`",
-      "`rescue`",
-      "`failOnNewColumns`",
-      "`none`"
-    ],
+    choices: ["`addNewColumns`", "`rescue`", "`failOnNewColumns`", "`none`"],
     correctIndex: 0,
     explanation:
       "The `addNewColumns` mode is the default when a schema is inferred. It evolves the schema by adding newly discovered columns. The `rescue` mode puts new columns in a rescued data column rather than evolving the schema, and `failOnNewColumns` fails the stream without evolving the schema.",
@@ -217,12 +214,13 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     key: "rescued-data",
     topicId: "auto-loader",
     domainId: "ingestion",
-    prompt: "A JSON file ingested by Auto Loader contains the field `{\"customer_id\": \"ABC\"}`, but the inferred schema expects an integer. If the rescued data column is configured, what happens to this record?",
+    prompt:
+      'A JSON file ingested by Auto Loader contains the field `{"customer_id": "ABC"}`, but the inferred schema expects an integer. If the rescued data column is configured, what happens to this record?',
     choices: [
       "The stream fails and the file is moved to a dead-letter queue.",
       "The record is written with a `NULL` for `customer_id` and the original field is preserved in the `_rescued_data` column.",
       "The `customer_id` is cast to a string and added as a new column.",
-      "The entire JSON record is skipped."
+      "The entire JSON record is skipped.",
     ],
     correctIndex: 1,
     explanation:
@@ -311,10 +309,10 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     prompt:
       "A developer is writing a PySpark script and needs to convert a string column `date_str` to a DateType column `order_date`. Which function from `pyspark.sql.functions` should they use?",
     choices: [
-      "`to_date(col(\"date_str\"), \"yyyy-MM-dd\")`",
-      "`date_format(col(\"date_str\"), \"yyyy-MM-dd\")`",
-      "`cast(col(\"date_str\"), \"date\")`",
-      "`from_unixtime(col(\"date_str\"))`"
+      '`to_date(col("date_str"), "yyyy-MM-dd")`',
+      '`date_format(col("date_str"), "yyyy-MM-dd")`',
+      '`cast(col("date_str"), "date")`',
+      '`from_unixtime(col("date_str"))`',
     ],
     correctIndex: 0,
     explanation:
@@ -326,15 +324,17 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     key: "left-join",
     topicId: "spark-sql",
     domainId: "processing",
-    prompt: "Given two DataFrames, `df_customers` and `df_orders`, which PySpark command correctly performs a left join to find customers without orders?",
+    prompt:
+      "Given two DataFrames, `df_customers` and `df_orders`, which PySpark command correctly performs a left join to find customers without orders?",
     choices: [
-      "`df_customers.join(df_orders, \"customer_id\", \"outer\").filter(col(\"order_id\").isNull())`",
-      "`df_customers.join(df_orders, \"customer_id\", \"left\").filter(col(\"order_id\").isNull())`",
-      "`df_customers.join(df_orders, \"customer_id\", \"inner\").filter(col(\"order_id\").isNull())`",
-      "`df_customers.join(df_orders, \"customer_id\", \"right\").filter(col(\"order_id\").isNull())`"
+      '`df_customers.join(df_orders, "customer_id", "outer").filter(col("order_id").isNull())`',
+      '`df_customers.join(df_orders, "customer_id", "left").filter(col("order_id").isNull())`',
+      '`df_customers.join(df_orders, "customer_id", "inner").filter(col("order_id").isNull())`',
+      '`df_customers.join(df_orders, "customer_id", "right").filter(col("order_id").isNull())`',
     ],
     correctIndex: 1,
-    explanation: "A `left` join preserves all rows from the left DataFrame (`df_customers`). Filtering where `order_id` is null identifies customers who have no corresponding records in the right DataFrame.",
+    explanation:
+      "A `left` join preserves all rows from the left DataFrame (`df_customers`). Filtering where `order_id` is null identifies customers who have no corresponding records in the right DataFrame.",
     resourceIds: ["exam-guide", "academy-pipelines"],
     difficulty: "medium",
   },
@@ -360,15 +360,17 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
     key: "group-by",
     topicId: "spark-sql",
     domainId: "processing",
-    prompt: "In Spark SQL, what is the effect of using the `GROUP BY` clause with the `CUBE` operator instead of the `ROLLUP` operator on two columns, `region` and `store`?",
+    prompt:
+      "In Spark SQL, what is the effect of using the `GROUP BY` clause with the `CUBE` operator instead of the `ROLLUP` operator on two columns, `region` and `store`?",
     choices: [
       "`CUBE` only computes subtotals for `region`, while `ROLLUP` computes subtotals for both.",
       "`CUBE` computes aggregations for all possible combinations of `region` and `store`, while `ROLLUP` computes aggregations hierarchically (`(region, store)`, `(region)`, `()`).",
       "`CUBE` requires a window function, but `ROLLUP` does not.",
-      "There is no difference; they produce identical output."
+      "There is no difference; they produce identical output.",
     ],
     correctIndex: 1,
-    explanation: "`CUBE` generates subtotals for all permutations of the specified columns. `ROLLUP` only generates subtotals hierarchically from left to right.",
+    explanation:
+      "`CUBE` generates subtotals for all permutations of the specified columns. `ROLLUP` only generates subtotals hierarchically from left to right.",
     resourceIds: ["exam-guide", "academy-pipelines"],
     difficulty: "hard",
   },
@@ -400,7 +402,8 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
       "Which output mode is required to emit the full aggregate result table each trigger?",
     choices: ["Append", "Complete", "Ignore", "Static"],
     correctIndex: 1,
-    explanation: "Complete mode emits the full aggregate result each trigger. Append is the default, and Update mode only emits updated rows.",
+    explanation:
+      "Complete mode emits the full aggregate result each trigger. Append is the default, and Update mode only emits updated rows.",
     resourceIds: ["docs-streaming", "academy-pipelines"],
     difficulty: "medium",
   },
@@ -435,7 +438,8 @@ const QUESTION_TEMPLATES: QuestionTemplate[] = [
       "Only manual reruns",
     ],
     correctIndex: 1,
-    explanation: "`Trigger.AvailableNow` processes all currently available data and then stops. `Trigger.Once` is deprecated in newer Databricks Runtime versions.",
+    explanation:
+      "`Trigger.AvailableNow` processes all currently available data and then stops. `Trigger.Once` is deprecated in newer Databricks Runtime versions.",
     resourceIds: ["docs-streaming", "academy-pipelines"],
     difficulty: "medium",
   },
@@ -815,6 +819,7 @@ function buildVariant(
 
   return {
     id: `${template.topicId}-${template.key}-${variantLabel.toLowerCase()}`,
+    templateKey: `${template.topicId}-${template.key}`,
     domainId: template.domainId,
     topicId: template.topicId,
     prompt,

@@ -101,6 +101,61 @@ function selectWithoutRecent(
   return [...selectedPreferred, ...selectedFallback];
 }
 
+function diversifyTemplateCoverage(
+  selectedQuestions: QuizQuestion[],
+  availableQuestions: QuizQuestion[],
+  recentIds: string[],
+  count: number,
+  seed: number,
+): QuizQuestion[] {
+  const dedupedByTemplate = Array.from(
+    new Map(
+      selectedQuestions.map((question) => [question.templateKey, question]),
+    ).values(),
+  );
+
+  if (dedupedByTemplate.length >= count) {
+    return shuffle(dedupedByTemplate, seed + 303).slice(0, count);
+  }
+
+  const usedIds = new Set(dedupedByTemplate.map((question) => question.id));
+  const usedTemplates = new Set(
+    dedupedByTemplate.map((question) => question.templateKey),
+  );
+
+  const unseenTemplatePool = availableQuestions.filter(
+    (question) =>
+      !usedIds.has(question.id) && !usedTemplates.has(question.templateKey),
+  );
+
+  const unseenTemplatePicks = selectWithoutRecent(
+    unseenTemplatePool,
+    recentIds,
+    count - dedupedByTemplate.length,
+    seed + 307,
+  );
+
+  const expanded = [...dedupedByTemplate, ...unseenTemplatePicks];
+
+  if (expanded.length >= count) {
+    return shuffle(expanded, seed + 311).slice(0, count);
+  }
+
+  const expandedIds = new Set(expanded.map((question) => question.id));
+  const fallbackPool = availableQuestions.filter(
+    (question) => !expandedIds.has(question.id),
+  );
+
+  const fallback = selectWithoutRecent(
+    fallbackPool,
+    recentIds,
+    count - expanded.length,
+    seed + 313,
+  );
+
+  return shuffle([...expanded, ...fallback], seed + 317).slice(0, count);
+}
+
 function weightedDomainPick(
   questions: QuizQuestion[],
   questionCount: number,
@@ -179,24 +234,32 @@ export function createSession(
   const selectedQuestions =
     config.mode === "overall_skills"
       ? weightedDomainPick(
-        filteredQuestions,
-        questionCount,
-        exposure.recentQuestionIds,
-        seed,
-      )
+          filteredQuestions,
+          questionCount,
+          exposure.recentQuestionIds,
+          seed,
+        )
       : selectWithoutRecent(
-        filteredQuestions,
-        exposure.recentQuestionIds,
-        questionCount,
-        seed,
-      );
+          filteredQuestions,
+          exposure.recentQuestionIds,
+          questionCount,
+          seed,
+        );
+
+  const diversifiedQuestions = diversifyTemplateCoverage(
+    selectedQuestions,
+    filteredQuestions,
+    exposure.recentQuestionIds,
+    questionCount,
+    seed,
+  );
 
   return {
     config: {
       ...config,
       questionCount,
     },
-    questionIds: selectedQuestions.map((question) => question.id),
+    questionIds: diversifiedQuestions.map((question) => question.id),
     answers: {},
     currentIndex: 0,
     startedAt: new Date().toISOString(),

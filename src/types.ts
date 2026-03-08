@@ -47,6 +47,7 @@ export interface WeeklyPlanState {
 
 export interface QuizQuestion {
   id: string;
+  templateKey: string;
   domainId: DomainId;
   topicId: string;
   prompt: string;

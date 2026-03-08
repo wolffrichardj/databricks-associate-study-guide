@@ -17,40 +17,67 @@ export function ResultsPanel({
   const scoreTone =
     scorePercent >= 80 ? "good" : scorePercent >= 60 ? "amber" : "alert";
 
+  const domainRows = EXAM_DOMAINS.map((domain) => ({
+    id: domain.id,
+    name: domain.name,
+    accuracy: Math.round((result.domainAccuracy[domain.id] ?? 0) * 100),
+  }));
+
+  const topicRows = Object.entries(result.topicAccuracy)
+    .map(([topicId, value]) => ({
+      id: topicId,
+      name: TOPICS.find((topic) => topic.id === topicId)?.name ?? topicId,
+      accuracy: Math.round(value * 100),
+    }))
+    .sort((a, b) => a.accuracy - b.accuracy);
+
   return (
     <section className="panel results-panel" data-testid="results-panel">
-      <h2>Session Results</h2>
-      <p className={`stat-text score-chip ${scoreTone}`}>
-        Session Results Score: {scorePercent}% ({result.correctCount}/
-        {result.total})
-      </p>
+      <header className="results-summary-card">
+        <h2>Session Results</h2>
+        <p className={`stat-text score-chip ${scoreTone}`}>
+          Score: {scorePercent}% ({result.correctCount}/{result.total})
+        </p>
+      </header>
 
-      <h3>Domain Breakdown</h3>
-      <ul className="compact-list">
-        {EXAM_DOMAINS.map((domain) => (
-          <li key={domain.id}>
-            <strong>{domain.name}:</strong>{" "}
-            {Math.round((result.domainAccuracy[domain.id] ?? 0) * 100)}%
-          </li>
-        ))}
-      </ul>
+      <div className="results-breakdown-grid">
+        <section className="chart-panel">
+          <h3>Domain Breakdown</h3>
+          <ul className="domain-bars">
+            {domainRows.map((domain) => (
+              <li key={domain.id}>
+                <div className="domain-row">
+                  <span>{domain.name}</span>
+                  <span>{domain.accuracy}%</span>
+                </div>
+                <div className="progress-track slim" aria-hidden="true">
+                  <div
+                    className="progress-fill"
+                    style={{ width: `${domain.accuracy}%` }}
+                  />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
 
-      <h3>Topic Breakdown</h3>
-      <ul className="compact-list">
-        {Object.entries(result.topicAccuracy).map(([topicId, value]) => {
-          const topicName =
-            TOPICS.find((topic) => topic.id === topicId)?.name ?? topicId;
-          return (
-            <li key={topicId}>
-              <strong>{topicName}:</strong> {Math.round(value * 100)}%
-            </li>
-          );
-        })}
-      </ul>
+        <section className="chart-panel">
+          <h3>Topic Breakdown</h3>
+          <ul className="compact-list">
+            {topicRows.map((topic) => (
+              <li key={topic.id}>
+                <strong>{topic.name}:</strong> {topic.accuracy}%
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
 
       <h3>Incorrect Answers</h3>
       {result.incorrectAnswers.length === 0 ? (
-        <p>Great work — you answered every question correctly in this session.</p>
+        <p>
+          Great work — you answered every question correctly in this session.
+        </p>
       ) : (
         <ul className="incorrect-list">
           {result.incorrectAnswers.map((incorrect) => (
@@ -77,17 +104,25 @@ export function ResultsPanel({
 
       <h3 className="study-next-heading">What To Study Next</h3>
       {recommendations.length === 0 ? (
-        <p>No weak topics detected yet. Keep practicing to maintain retention.</p>
+        <p>
+          No weak topics detected yet. Keep practicing to maintain retention.
+        </p>
       ) : (
         <ul className="recommendation-list">
           {recommendations.map((recommendation) => (
             <li key={recommendation.topicId}>
               <p>
-                <strong>{recommendation.topicName}</strong> ({recommendation.reason})
+                <strong>{recommendation.topicName}</strong> (
+                {recommendation.reason})
               </p>
               <div className="resource-links result-resource-links">
                 {recommendation.resources.map((resource) => (
-                  <a key={resource.id} href={resource.url} target="_blank" rel="noreferrer">
+                  <a
+                    key={resource.id}
+                    href={resource.url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     {resource.title}
                   </a>
                 ))}
@@ -97,7 +132,11 @@ export function ResultsPanel({
         </ul>
       )}
 
-      <button type="button" className="results-back-button" onClick={onBackToSetup}>
+      <button
+        type="button"
+        className="results-back-button"
+        onClick={onBackToSetup}
+      >
         Back to Quiz Setup
       </button>
     </section>
