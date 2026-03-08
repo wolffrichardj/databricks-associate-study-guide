@@ -35,6 +35,28 @@ describe("createSession", () => {
     );
 
     expect(session.questionIds).toHaveLength(10);
+    expect(new Set(session.questionIds).size).toBe(10);
+  });
+
+  it("never returns duplicate question IDs even if source data has duplicates", () => {
+    const duplicatedBank = [
+      QUIZ_QUESTIONS[0],
+      QUIZ_QUESTIONS[0],
+      QUIZ_QUESTIONS[1],
+    ];
+
+    const session = createSession(
+      {
+        mode: "focused_topic",
+        topicId: QUIZ_QUESTIONS[0].topicId,
+        questionCount: 10,
+      },
+      duplicatedBank,
+      { recentQuestionIds: [] },
+      11,
+    );
+
+    expect(new Set(session.questionIds).size).toBe(session.questionIds.length);
   });
 
   it("avoids immediately repeating recent questions when possible", () => {

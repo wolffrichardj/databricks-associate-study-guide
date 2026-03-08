@@ -12,6 +12,31 @@ import type {
 const MIN_QUESTIONS = 5;
 const DEFAULT_QUESTION_COUNT = 10;
 
+function uniqueQuestions(questions: QuizQuestion[]): QuizQuestion[] {
+  return Array.from(
+    new Map(questions.map((question) => [question.id, question])).values(),
+  );
+}
+
+function filterQuestionsByConfig(
+  config: QuizSessionConfig,
+  questions: QuizQuestion[],
+): QuizQuestion[] {
+  return uniqueQuestions(
+    questions.filter((question) => {
+      if (config.mode === "focused_topic") {
+        if (config.topicId) {
+          return question.topicId === config.topicId;
+        }
+        if (config.domainId) {
+          return question.domainId === config.domainId;
+        }
+      }
+      return true;
+    }),
+  );
+}
+
 export function clampQuestionCount(value: number, maxQuestions = 60): number {
   const boundedMax = Math.max(0, Math.floor(maxQuestions));
   if (boundedMax === 0) {
@@ -23,15 +48,27 @@ export function clampQuestionCount(value: number, maxQuestions = 60): number {
   return Math.max(boundedMin, Math.min(boundedMax, requestedCount));
 }
 
-function shuffle<T>(items: T[], seed: number): T[] {
-  const output = [...items];
+function takeRandomWithoutReplacement<T>(
+  items: T[],
+  count: number,
+  seed: number,
+): T[] {
+  const pool = [...items];
+  const selected: T[] = [];
   let cursor = seed;
-  for (let index = output.length - 1; index > 0; index -= 1) {
+
+  while (selected.length < count && pool.length > 0) {
     cursor = (cursor * 9301 + 49297) % 233280;
-    const swapIndex = Math.floor((cursor / 233280) * (index + 1));
-    [output[index], output[swapIndex]] = [output[swapIndex], output[index]];
+    const randomIndex = Math.floor((cursor / 233280) * pool.length);
+    const [choice] = pool.splice(randomIndex, 1);
+    selected.push(choice);
   }
-  return output;
+
+  return selected;
+}
+
+function shuffle<T>(items: T[], seed: number): T[] {
+  return takeRandomWithoutReplacement(items, items.length, seed);
 }
 
 function selectWithoutRecent(
@@ -40,15 +77,28 @@ function selectWithoutRecent(
   count: number,
   seed: number,
 ): QuizQuestion[] {
+  const unique = uniqueQuestions(questions);
   const recentSet = new Set(recentIds);
-  const preferred = questions.filter((question) => !recentSet.has(question.id));
-  const fallback = questions.filter((question) => recentSet.has(question.id));
+  const preferred = unique.filter((question) => !recentSet.has(question.id));
+  const fallback = unique.filter((question) => recentSet.has(question.id));
 
-  const selected = [
-    ...shuffle(preferred, seed),
-    ...shuffle(fallback, seed + 9),
-  ];
-  return selected.slice(0, count);
+  const selectedPreferred = takeRandomWithoutReplacement(
+    preferred,
+    count,
+    seed,
+  );
+
+  if (selectedPreferred.length >= count) {
+    return selectedPreferred;
+  }
+
+  const selectedFallback = takeRandomWithoutReplacement(
+    fallback,
+    count - selectedPreferred.length,
+    seed + 9,
+  );
+
+  return [...selectedPreferred, ...selectedFallback];
 }
 
 function weightedDomainPick(
@@ -106,23 +156,20 @@ function weightedDomainPick(
   return [...uniqueSelected, ...remainder];
 }
 
+export function getAvailableQuestionCount(
+  config: QuizSessionConfig,
+  questions: QuizQuestion[],
+): number {
+  return filterQuestionsByConfig(config, questions).length;
+}
+
 export function createSession(
   config: QuizSessionConfig,
   questions: QuizQuestion[],
   exposure: ExposureState,
   seed = Date.now(),
 ): SessionState {
-  const filteredQuestions = questions.filter((question) => {
-    if (config.mode === "focused_topic") {
-      if (config.topicId) {
-        return question.topicId === config.topicId;
-      }
-      if (config.domainId) {
-        return question.domainId === config.domainId;
-      }
-    }
-    return true;
-  });
+  const filteredQuestions = filterQuestionsByConfig(config, questions);
 
   const questionCount = clampQuestionCount(
     config.questionCount,
@@ -132,17 +179,17 @@ export function createSession(
   const selectedQuestions =
     config.mode === "overall_skills"
       ? weightedDomainPick(
-          filteredQuestions,
-          questionCount,
-          exposure.recentQuestionIds,
-          seed,
-        )
+        filteredQuestions,
+        questionCount,
+        exposure.recentQuestionIds,
+        seed,
+      )
       : selectWithoutRecent(
-          filteredQuestions,
-          exposure.recentQuestionIds,
-          questionCount,
-          seed,
-        );
+        filteredQuestions,
+        exposure.recentQuestionIds,
+        questionCount,
+        seed,
+      );
 
   return {
     config: {

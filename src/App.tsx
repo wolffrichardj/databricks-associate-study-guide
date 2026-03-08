@@ -6,6 +6,8 @@ import {
   createSession,
   mergeTopicPerformance,
   calculateSessionResult,
+  getAvailableQuestionCount,
+  clampQuestionCount,
 } from "./lib/quiz";
 import {
   completeSession,
@@ -63,6 +65,7 @@ function App() {
   const [quizConfig, setQuizConfig] =
     useState<QuizSessionConfig>(DEFAULT_QUIZ_CONFIG);
   const [lastResult, setLastResult] = useState<SessionResult>();
+  const [warningToast, setWarningToast] = useState<string>();
 
   useEffect(() => {
     saveState(state);
@@ -77,6 +80,20 @@ function App() {
       `${window.location.pathname}?${params.toString()}`,
     );
   }, [view]);
+
+  useEffect(() => {
+    if (!warningToast) {
+      return undefined;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setWarningToast(undefined);
+    }, 3500);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [warningToast]);
 
   const questionMap = useMemo(
     () => new Map(QUIZ_QUESTIONS.map((question) => [question.id, question])),
@@ -148,6 +165,21 @@ function App() {
   );
 
   const handleStartQuiz = () => {
+    const availableQuestionCount = getAvailableQuestionCount(
+      quizConfig,
+      QUIZ_QUESTIONS,
+    );
+
+    // Use the same clamping logic as createSession to check if we are capping
+    const requestedCountClamped = clampQuestionCount(quizConfig.questionCount, 60);
+    const effectiveCount = clampQuestionCount(quizConfig.questionCount, availableQuestionCount);
+
+    if (availableQuestionCount > 0 && effectiveCount < requestedCountClamped) {
+      setWarningToast(
+        `There are only ${availableQuestionCount} questions in this section. We will use all available questions.`,
+      );
+    }
+
     const session = createSession(quizConfig, QUIZ_QUESTIONS, state.exposure);
     setState((currentState) => setActiveSession(currentState, session));
     setLastResult(undefined);
@@ -265,6 +297,12 @@ function App() {
 
   return (
     <main className="app-shell">
+      {warningToast ? (
+        <div className="toast toast-warning" role="status" aria-live="polite">
+          {warningToast}
+        </div>
+      ) : null}
+
       <header className="app-header">
         <div>
           <h1>Databricks Associate Study App</h1>
