@@ -13,8 +13,7 @@ When making code changes in this repository, the coding agent **must** include P
 For each relevant run, capture and include:
 1. **Weekly page** (main page)
 2. **Quiz page** (main page)
-3. **Progress page** (main page)
-4. **Quiz sample state** (a representative in-progress quiz view, not just quiz setup)
+3. **Quiz sample state** (a representative in-progress quiz view, not just quiz setup)
 
 If a change only affects one page, still try to include the full set above when feasible so reviewers can quickly validate there are no regressions.
 
@@ -49,7 +48,7 @@ If a change only affects one page, still try to include the full set above when 
   - set `data-testid="question-count"` to `5`,
   - click `data-testid="start-quiz"`,
   - capture while `data-testid="quiz-player"` is visible.
-- TODO: The minimum screenshot set requires a Progress page, but current primary tab navigation includes Weekly Plan and Quiz only; document the canonical navigation path to Progress once confirmed.
+- Primary navigation includes two tabs: **Weekly Plan** and **Quiz**.
 
 ## Product context requirements (mandatory)
 

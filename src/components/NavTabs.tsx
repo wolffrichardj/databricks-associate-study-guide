@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react'
 
-export type AppView = 'weekly' | 'quiz' | 'progress'
+export type AppView = 'weekly' | 'quiz'
 
 interface NavTabsProps {
   view: AppView
