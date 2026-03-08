@@ -7,6 +7,7 @@ import {
   mergeTopicPerformance,
   calculateSessionResult,
   getAvailableQuestionCount,
+  clampQuestionCount,
 } from "./lib/quiz";
 import {
   completeSession,
@@ -169,10 +170,11 @@ function App() {
       QUIZ_QUESTIONS,
     );
 
-    if (
-      availableQuestionCount > 0 &&
-      quizConfig.questionCount > availableQuestionCount
-    ) {
+    // Use the same clamping logic as createSession to check if we are capping
+    const requestedCountClamped = clampQuestionCount(quizConfig.questionCount, 60);
+    const effectiveCount = clampQuestionCount(quizConfig.questionCount, availableQuestionCount);
+
+    if (availableQuestionCount > 0 && effectiveCount < requestedCountClamped) {
       setWarningToast(
         `There are only ${availableQuestionCount} questions in this section. We will use all available questions.`,
       );
