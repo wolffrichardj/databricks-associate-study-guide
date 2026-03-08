@@ -29,11 +29,11 @@ export function QuizPlayer({
         <h2>Quiz Session Error</h2>
         <p>Question not found in current bank.</p>
       </section>
-    );
+    )
   }
 
-  const selectedChoiceId = session.answers[activeQuestion.id];
-  const isLastQuestion = session.currentIndex >= session.questionIds.length - 1;
+  const selectedChoiceId = session.answers[activeQuestion.id]
+  const isLastQuestion = session.currentIndex >= session.questionIds.length - 1
 
   return (
     <section className="panel" data-testid="quiz-player">
@@ -88,5 +88,5 @@ export function QuizPlayer({
         )}
       </div>
     </section>
-  );
+  )
 }
