@@ -1,5 +1,4 @@
-import ReactMarkdown from "react-markdown";
-import { EXAM_DOMAINS, TOPICS } from "../data/exam";
+import { MarkdownText } from "./MarkdownText";
 import type { Recommendation, SessionResult } from "../types";
 
 interface ResultsPanelProps {
@@ -13,38 +12,19 @@ export function ResultsPanel({
   recommendations,
   onBackToSetup,
 }: ResultsPanelProps) {
+  const scorePercent = Math.round(result.score * 100);
+  const scoreTone =
+    scorePercent >= 80 ? "good" : scorePercent >= 60 ? "amber" : "alert";
+
   return (
     <section className="panel results-panel" data-testid="results-panel">
       <h2>Session Results</h2>
-      <p className="stat-text">
-        Score: {Math.round(result.score * 100)}% ({result.correctCount}/
+      <p className={`stat-text score-chip ${scoreTone}`}>
+        Session Results Score: {scorePercent}% ({result.correctCount}/
         {result.total})
       </p>
 
-      <h3>Domain Breakdown</h3>
-      <ul className="compact-list">
-        {EXAM_DOMAINS.map((domain) => (
-          <li key={domain.id}>
-            <strong>{domain.name}:</strong>{" "}
-            {Math.round((result.domainAccuracy[domain.id] ?? 0) * 100)}%
-          </li>
-        ))}
-      </ul>
-
-      <h3>Topic Breakdown</h3>
-      <ul className="compact-list">
-        {Object.entries(result.topicAccuracy).map(([topicId, value]) => {
-          const topicName =
-            TOPICS.find((topic) => topic.id === topicId)?.name ?? topicId;
-          return (
-            <li key={topicId}>
-              <strong>{topicName}:</strong> {Math.round(value * 100)}%
-            </li>
-          );
-        })}
-      </ul>
-
-      <h3>Review Incorrect Answers</h3>
+      <h3>Incorrect Answers</h3>
       {result.incorrectAnswers.length === 0 ? (
         <p>
           Great work — you answered every question correctly in this session.
@@ -55,25 +35,25 @@ export function ResultsPanel({
             <li key={incorrect.questionId} className="incorrect-item">
               <div>
                 <strong>Question:</strong>{" "}
-                <ReactMarkdown components={{ p: "span" }}>{incorrect.prompt}</ReactMarkdown>
+                <MarkdownText text={incorrect.prompt} inline />
               </div>
               <div>
                 <strong>You selected:</strong>{" "}
-                <ReactMarkdown components={{ p: "span" }}>{incorrect.selectedChoice}</ReactMarkdown>
+                <MarkdownText text={incorrect.selectedChoice} inline />
               </div>
               <div>
                 <strong>Correct answer:</strong>{" "}
-                <ReactMarkdown components={{ p: "span" }}>{incorrect.correctChoice}</ReactMarkdown>
+                <MarkdownText text={incorrect.correctChoice} inline />
               </div>
               <div className="answer-explanation">
-                <ReactMarkdown>{incorrect.explanation}</ReactMarkdown>
+                <MarkdownText text={incorrect.explanation} />
               </div>
             </li>
           ))}
         </ul>
       )}
 
-      <h3>What To Study Next</h3>
+      <h3 className="study-next-heading">What To Study Next</h3>
       {recommendations.length === 0 ? (
         <p>
           No weak topics detected yet. Keep practicing to maintain retention.
