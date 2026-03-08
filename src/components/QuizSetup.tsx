@@ -21,6 +21,7 @@ export function QuizSetup({
   focusedMaxCount,
 }: QuizSetupProps) {
   const maxQuestionCount = config.mode === 'overall_skills' ? fullExamMaxCount : focusedMaxCount
+  const minQuestionCount = Math.min(5, maxQuestionCount)
   const questionCountHint =
     config.mode === 'overall_skills'
       ? `Number of questions for this session. Default: ${fullExamDefaultCount}, max available: ${fullExamMaxCount}.`
@@ -132,12 +133,12 @@ export function QuizSetup({
           data-testid="question-count"
           className="question-count-input"
           type="number"
-          min={5}
+          min={minQuestionCount}
           max={maxQuestionCount}
           value={config.questionCount}
           onChange={(event) => {
             const requestedCount = Number(event.target.value)
-            const boundedMin = Math.min(5, maxQuestionCount)
+            const boundedMin = minQuestionCount
             const boundedCount = Math.max(boundedMin, Math.min(maxQuestionCount, requestedCount))
 
             onConfigChange({

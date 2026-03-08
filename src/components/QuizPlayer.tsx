@@ -1,24 +1,17 @@
-import type { QuizQuestion, SessionState } from "../types";
+import { renderInlineMarkdown } from '../lib/inlineMarkdown'
+import type { QuizQuestion, SessionState } from '../types'
 
 interface QuizPlayerProps {
-  session: SessionState;
-  questions: QuizQuestion[];
-  onAnswer: (questionId: string, choiceId: string) => void;
-  onNext: () => void;
-  onFinish: () => void;
+  session: SessionState
+  questions: QuizQuestion[]
+  onAnswer: (questionId: string, choiceId: string) => void
+  onNext: () => void
+  onFinish: () => void
 }
 
-export function QuizPlayer({
-  session,
-  questions,
-  onAnswer,
-  onNext,
-  onFinish,
-}: QuizPlayerProps) {
-  const activeQuestionId = session.questionIds[session.currentIndex];
-  const activeQuestion = questions.find(
-    (question) => question.id === activeQuestionId,
-  );
+export function QuizPlayer({ session, questions, onAnswer, onNext, onFinish }: QuizPlayerProps) {
+  const activeQuestionId = session.questionIds[session.currentIndex]
+  const activeQuestion = questions.find((question) => question.id === activeQuestionId)
 
   if (!activeQuestion) {
     return (
@@ -26,18 +19,18 @@ export function QuizPlayer({
         <h2>Quiz Session Error</h2>
         <p>Question not found in current bank.</p>
       </section>
-    );
+    )
   }
 
-  const selectedChoiceId = session.answers[activeQuestion.id];
-  const isLastQuestion = session.currentIndex >= session.questionIds.length - 1;
+  const selectedChoiceId = session.answers[activeQuestion.id]
+  const isLastQuestion = session.currentIndex >= session.questionIds.length - 1
 
   return (
     <section className="panel" data-testid="quiz-player">
       <h2>
         Question {session.currentIndex + 1} of {session.questionIds.length}
       </h2>
-      <p className="quiz-question-text">{activeQuestion.prompt}</p>
+      <p className="quiz-question-text">{renderInlineMarkdown(activeQuestion.prompt)}</p>
 
       <div className="choice-list">
         {activeQuestion.choices.map((choice) => (
@@ -48,7 +41,7 @@ export function QuizPlayer({
               checked={selectedChoiceId === choice.id}
               onChange={() => onAnswer(activeQuestion.id, choice.id)}
             />
-            <span className="choice-text">{choice.text}</span>
+            <span className="choice-text">{renderInlineMarkdown(choice.text)}</span>
           </label>
         ))}
       </div>
@@ -65,5 +58,5 @@ export function QuizPlayer({
         )}
       </div>
     </section>
-  );
+  )
 }

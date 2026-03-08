@@ -201,9 +201,12 @@ function App() {
   }
 
   const handlePracticeRecommendation = (topicId: string) => {
+    const topicQuestionCount = QUIZ_QUESTIONS.filter((question) => question.topicId === topicId).length
+    const topicDefaultCount = Math.min(FOCUSED_DEFAULT_COUNT, Math.max(topicQuestionCount, 1))
+
     setQuizConfig({
       mode: 'focused_topic',
-      questionCount: focusedDefaultCount,
+      questionCount: topicDefaultCount,
       topicId,
     })
     setLastResult(undefined)
