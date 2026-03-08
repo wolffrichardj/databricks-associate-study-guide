@@ -30,6 +30,27 @@ If a change only affects one page, still try to include the full set above when 
 - Start/attach to the local app, navigate to each page, and save artifacts with stable names.
 - Reuse consistent viewport sizing to make before/after comparisons easier.
 
+### Repo-verified local workflow and commands
+- Use Node `>=22` (see `.nvmrc` and `package.json` engines), then run `npm install`.
+- Start app locally with `npm run dev` (Vite default) or Playwright base URL flow on `http://127.0.0.1:4173`.
+- Core validation commands:
+  - `npm run typecheck`
+  - `npm run lint`
+  - `npm run test`
+  - `npm run test:e2e`
+  - `npm run ci` (full local CI sequence)
+- Existing E2E coverage in `e2e/app.spec.ts` verifies:
+  - weekly checklist persistence after reload,
+  - focused-topic quiz run to results,
+  - overall-skills quiz run and `Start Over` reset behavior.
+- For quiz sample screenshots, prefer this deterministic setup flow:
+  - open `Quiz`,
+  - set `data-testid="topic-select"` to `auto-loader`,
+  - set `data-testid="question-count"` to `5`,
+  - click `data-testid="start-quiz"`,
+  - capture while `data-testid="quiz-player"` is visible.
+- TODO: The minimum screenshot set requires a Progress page, but current primary tab navigation includes Weekly Plan and Quiz only; document the canonical navigation path to Progress once confirmed.
+
 ## Product context requirements (mandatory)
 
 Before implementing non-trivial changes, the coding agent must review the project specs for intent/scope alignment:
