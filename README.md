@@ -40,3 +40,8 @@ npm run ci
 
 - Local-only storage (no backend/auth in v1).
 - Weekly checklist and Quiz are the two core app experiences.
+
+## Build notes and lessons learned
+
+To see the lessons we learned and how we built and managed this codebase, go here: [LESSONS_LEARNED.md](./LESSONS_LEARNED.md).
+
