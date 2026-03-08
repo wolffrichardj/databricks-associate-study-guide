@@ -1,6 +1,12 @@
 # Databricks Associate Study App
 
-Local-first React + TypeScript app for Databricks Data Engineer Associate prep.
+Interactive Databricks Data Engineer Associate study app with a weekly plan, focused and mixed quizzes, and weak-topic recommendations.
+
+## Suggested GitHub repository description
+
+Use this in **GitHub → Settings/About → Description**:
+
+> Interactive Databricks Data Engineer Associate study app with a weekly plan, quizzes, and weak-topic recommendations.
 
 ## What it does
 
