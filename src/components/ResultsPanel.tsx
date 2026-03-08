@@ -1,3 +1,4 @@
+import { MarkdownText } from "./MarkdownText";
 import type { Recommendation, SessionResult } from "../types";
 
 interface ResultsPanelProps {
@@ -33,16 +34,19 @@ export function ResultsPanel({
           {result.incorrectAnswers.map((incorrect) => (
             <li key={incorrect.questionId} className="incorrect-item">
               <div>
-                <strong>Question:</strong> {incorrect.prompt}
+                <strong>Question:</strong>{" "}
+                <MarkdownText text={incorrect.prompt} inline />
               </div>
               <div>
-                <strong>You selected:</strong> {incorrect.selectedChoice}
+                <strong>You selected:</strong>{" "}
+                <MarkdownText text={incorrect.selectedChoice} inline />
               </div>
               <div>
-                <strong>Correct answer:</strong> {incorrect.correctChoice}
+                <strong>Correct answer:</strong>{" "}
+                <MarkdownText text={incorrect.correctChoice} inline />
               </div>
               <div className="answer-explanation">
-                <p>{incorrect.explanation}</p>
+                <MarkdownText text={incorrect.explanation} />
               </div>
             </li>
           ))}

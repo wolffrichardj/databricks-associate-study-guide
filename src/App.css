@@ -468,3 +468,14 @@ button:disabled {
 .study-next-heading {
   margin-top: 1.4rem;
 }
+
+.quiz-question-text code,
+.choice-text code,
+.answer-explanation code,
+.incorrect-item code {
+  font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+  background: #f2f6f8;
+  border: 1px solid #d8e3e8;
+  border-radius: 0.3rem;
+  padding: 0.05rem 0.25rem;
+}

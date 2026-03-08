@@ -1,3 +1,4 @@
+import { MarkdownText } from "./MarkdownText";
 import type { QuizQuestion, SessionState } from "../types";
 
 interface QuizPlayerProps {
@@ -49,7 +50,7 @@ export function QuizPlayer({
         </button>
       </div>
       <div className="quiz-question-text">
-        <p>{activeQuestion.prompt}</p>
+        <MarkdownText text={activeQuestion.prompt} />
       </div>
 
       <div className="choice-list">
@@ -69,7 +70,7 @@ export function QuizPlayer({
               onChange={() => onAnswer(activeQuestion.id, choice.id)}
             />
             <div className="choice-text">
-              <p>{choice.text}</p>
+              <MarkdownText text={choice.text} inline />
             </div>
           </label>
         ))}
