@@ -15,11 +15,11 @@
 - Authentication or user accounts.
 - Cloud sync or backend storage.
 - Multi-user collaboration.
-- Advanced analytics dashboards beyond current progress/performance views.
+- Advanced analytics dashboards beyond weekly completion and quiz-performance feedback.
 
 ## Constraints and principles
 
 - Local-first: state is persisted on-device.
 - Lightweight UX: minimal steps to start studying.
 - Databricks-focused content/resources.
-- Changes should preserve clear separation of weekly, quiz, and progress experiences.
+- Changes should preserve clear separation between the weekly checklist and quiz experiences.

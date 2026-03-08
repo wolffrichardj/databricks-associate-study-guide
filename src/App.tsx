@@ -29,7 +29,6 @@ import { WeeklyPlanView } from "./components/WeeklyPlanView";
 import { QuizSetup } from "./components/QuizSetup";
 import { QuizPlayer } from "./components/QuizPlayer";
 import { ResultsPanel } from "./components/ResultsPanel";
-import { ProgressView } from "./components/ProgressView";
 
 const FULL_EXAM_DEFAULT_COUNT = 45;
 const FOCUSED_DEFAULT_COUNT = 10;
@@ -274,19 +273,6 @@ function App() {
     setView("weekly");
   };
 
-  const handlePracticeRecommendation = (topicId: string) => {
-    const topicQuestionCount = QUIZ_QUESTIONS.filter((question) => question.topicId === topicId).length
-    const topicDefaultCount = Math.min(FOCUSED_DEFAULT_COUNT, Math.max(topicQuestionCount, 1))
-
-    setQuizConfig({
-      mode: "focused_topic",
-      questionCount: topicDefaultCount,
-      topicId,
-    });
-    setLastResult(undefined);
-    setView("quiz");
-  };
-
   const activeSessionQuestions = state.activeSession
     ? state.activeSession.questionIds
       .map((questionId) => questionMap.get(questionId))
@@ -410,15 +396,6 @@ function App() {
         </section>
       ) : null}
 
-      {view === "progress" ? (
-        <ProgressView
-          sessionHistory={state.sessionHistory}
-          topicPerformance={state.topicPerformance}
-          weeklyPlan={state.weeklyPlan}
-          onOpenWeeklyPlan={() => setView("weekly")}
-          onPracticeTopic={handlePracticeRecommendation}
-        />
-      ) : null}
     </main>
   );
 }
