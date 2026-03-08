@@ -7,6 +7,8 @@ interface QuizSetupProps {
   onStart: () => void
   fullExamDefaultCount: number
   focusedDefaultCount: number
+  fullExamMaxCount: number
+  focusedMaxCount: number
 }
 
 export function QuizSetup({
@@ -15,11 +17,14 @@ export function QuizSetup({
   onStart,
   fullExamDefaultCount,
   focusedDefaultCount,
+  fullExamMaxCount,
+  focusedMaxCount,
 }: QuizSetupProps) {
+  const maxQuestionCount = config.mode === 'overall_skills' ? fullExamMaxCount : focusedMaxCount
   const questionCountHint =
     config.mode === 'overall_skills'
-      ? `Default: ${fullExamDefaultCount} questions for a realistic full test cadence.`
-      : `Default: ${focusedDefaultCount} questions for efficient targeted practice.`
+      ? `Number of questions for this session. Default: ${fullExamDefaultCount}, max available: ${fullExamMaxCount}.`
+      : `Number of questions for this session. Default: ${focusedDefaultCount}, max available for your current focus: ${focusedMaxCount}.`
 
   return (
     <section className="panel" data-testid="quiz-setup">
@@ -117,7 +122,7 @@ export function QuizSetup({
           <span
             className="hint-icon"
             role="img"
-            aria-label="Question count default information"
+            aria-label="Number of questions guidance"
             title={questionCountHint}
           >
             ⓘ
@@ -128,14 +133,18 @@ export function QuizSetup({
           className="question-count-input"
           type="number"
           min={5}
-          max={60}
+          max={maxQuestionCount}
           value={config.questionCount}
-          onChange={(event) =>
+          onChange={(event) => {
+            const requestedCount = Number(event.target.value)
+            const boundedMin = Math.min(5, maxQuestionCount)
+            const boundedCount = Math.max(boundedMin, Math.min(maxQuestionCount, requestedCount))
+
             onConfigChange({
               ...config,
-              questionCount: Number(event.target.value),
+              questionCount: Number.isFinite(requestedCount) ? boundedCount : config.questionCount,
             })
-          }
+          }}
         />
       </label>
 

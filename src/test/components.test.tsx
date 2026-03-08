@@ -23,6 +23,8 @@ describe('QuizSetup', () => {
         onStart={() => undefined}
         fullExamDefaultCount={45}
         focusedDefaultCount={10}
+        fullExamMaxCount={44}
+        focusedMaxCount={20}
       />, 
     )
 

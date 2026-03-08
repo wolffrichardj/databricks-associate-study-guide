@@ -12,8 +12,15 @@ import type {
 const MIN_QUESTIONS = 5;
 const DEFAULT_QUESTION_COUNT = 10;
 
-export function clampQuestionCount(value: number): number {
-  return Math.max(MIN_QUESTIONS, Math.min(60, value || DEFAULT_QUESTION_COUNT));
+export function clampQuestionCount(value: number, maxQuestions = 60): number {
+  const boundedMax = Math.max(0, Math.floor(maxQuestions));
+  if (boundedMax === 0) {
+    return 0;
+  }
+
+  const boundedMin = Math.min(MIN_QUESTIONS, boundedMax);
+  const requestedCount = value || DEFAULT_QUESTION_COUNT;
+  return Math.max(boundedMin, Math.min(boundedMax, requestedCount));
 }
 
 function shuffle<T>(items: T[], seed: number): T[] {
@@ -105,8 +112,6 @@ export function createSession(
   exposure: ExposureState,
   seed = Date.now(),
 ): SessionState {
-  const questionCount = clampQuestionCount(config.questionCount);
-
   const filteredQuestions = questions.filter((question) => {
     if (config.mode === "focused_topic") {
       if (config.topicId) {
@@ -118,6 +123,11 @@ export function createSession(
     }
     return true;
   });
+
+  const questionCount = clampQuestionCount(
+    config.questionCount,
+    filteredQuestions.length,
+  );
 
   const selectedQuestions =
     config.mode === "overall_skills"
