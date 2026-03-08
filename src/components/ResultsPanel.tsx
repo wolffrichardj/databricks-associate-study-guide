@@ -1,11 +1,11 @@
-import { EXAM_DOMAINS, TOPICS } from '../data/exam'
+import { EXAM_DOMAINS, TOPICS } from "../data/exam";
 import { MarkdownText } from "./MarkdownText";
-import type { Recommendation, SessionResult } from '../types'
+import type { Recommendation, SessionResult } from "../types";
 
 interface ResultsPanelProps {
-  result: SessionResult
-  recommendations: Recommendation[]
-  onBackToSetup: () => void
+  result: SessionResult;
+  recommendations: Recommendation[];
+  onBackToSetup: () => void;
 }
 
 export function ResultsPanel({
@@ -101,5 +101,5 @@ export function ResultsPanel({
         Back to Quiz Setup
       </button>
     </section>
-  )
+  );
 }

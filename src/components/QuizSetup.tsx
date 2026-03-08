@@ -138,14 +138,21 @@ export function QuizSetup({
           value={config.questionCount}
           onChange={(event) => {
             const requestedCount = Number(event.target.value)
-            const boundedMin = minQuestionCount
-            const boundedCount = Math.max(boundedMin, Math.min(maxQuestionCount, requestedCount))
+            if (!Number.isFinite(requestedCount)) {
+              return
+            }
 
             onConfigChange({
               ...config,
-              questionCount: Number.isFinite(requestedCount) ? boundedCount : config.questionCount,
+              questionCount: Math.min(maxQuestionCount, requestedCount),
             })
           }}
+          onBlur={() =>
+            onConfigChange({
+              ...config,
+              questionCount: Math.max(minQuestionCount, Math.min(maxQuestionCount, config.questionCount)),
+            })
+          }
         />
       </label>
 
