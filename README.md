@@ -70,7 +70,7 @@ A [follow-up](https://github.com/wolffrichardj/databricks-associate-study-guide/
 
 Selected question IDs are repeatable for the same ordered bank, configuration, exposure history and explicit seed. The complete session also contains a clock-derived timestamp, and the normal UI uses a clock-derived seed.
 
-Source/test inspection baseline: `53a35a9d89da5755d94d1d2880f6023c4d6f90b0`. See the [November 10, 2026 publication validation record](@@STUDY_DOCS_PR_URL@@) for the actual tested revision, commands, results, known limits and Playwright screenshots of Weekly Plan, quiz setup and a quiz in progress. That dated record is distinct from current CI status.
+Source/test inspection baseline: `53a35a9d89da5755d94d1d2880f6023c4d6f90b0`. See the [November 10, 2026 publication validation record](https://github.com/wolffrichardj/databricks-associate-study-guide/pull/25) for the actual tested revision, commands, results, known limits and Playwright screenshots of Weekly Plan, quiz setup and a quiz in progress. That dated record is distinct from current CI status.
 
 Local `test:e2e` can exit successfully after skipping unavailable browser binaries. Use `CI=true npm run test:e2e` and inspect the executed desktop/mobile cases when recording a browser pass. The suite starts Vite's development server; a build or browser pass does not establish production-host behavior or real-device acceptance.
 
