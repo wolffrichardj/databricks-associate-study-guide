@@ -1,0 +1,270 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Account-free study, browser-owned state",
+    "locale": "en",
+    "output": "docs/architecture/study-app.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/wolffrichardj/databricks-associate-study-guide",
+      "revision": "3b3799d5ba469fc5ed937fd09e90395302773277",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "components": [
+    {
+      "id": "learner",
+      "type": "external",
+      "label": "Learner",
+      "sublabel": "Check tasks \u2022 practice \u2022 review",
+      "pos": [
+        40,
+        40
+      ],
+      "size": [
+        190,
+        65
+      ],
+      "sources": [
+        {
+          "path": "src/App.tsx",
+          "line": 292,
+          "end_line": 307
+        }
+      ]
+    },
+    {
+      "id": "views",
+      "type": "frontend",
+      "label": "React views",
+      "sublabel": "Weekly / setup / play / results",
+      "pos": [
+        340,
+        40
+      ],
+      "size": [
+        200,
+        65
+      ],
+      "sources": [
+        {
+          "path": "src/App.tsx",
+          "line": 351,
+          "end_line": 395
+        },
+        {
+          "path": "src/components/WeeklyPlanView.tsx",
+          "line": 10,
+          "end_line": 59
+        },
+        {
+          "path": "src/components/QuizPlayer.tsx",
+          "line": 13,
+          "end_line": 86
+        }
+      ]
+    },
+    {
+      "id": "app",
+      "type": "frontend",
+      "label": "App coordinator",
+      "sublabel": "State \u2022 intents \u2022 ID lookup",
+      "pos": [
+        340,
+        235
+      ],
+      "size": [
+        200,
+        75
+      ],
+      "sources": [
+        {
+          "path": "src/App.tsx",
+          "line": 61,
+          "end_line": 81
+        },
+        {
+          "path": "src/App.tsx",
+          "line": 166,
+          "end_line": 282
+        },
+        {
+          "path": "src/App.tsx",
+          "line": 351,
+          "end_line": 395
+        }
+      ]
+    },
+    {
+      "id": "quiz",
+      "type": "frontend",
+      "label": "Quiz + feedback helpers",
+      "sublabel": "Select \u2022 score \u2022 recommend",
+      "pos": [
+        700,
+        235
+      ],
+      "size": [
+        200,
+        75
+      ],
+      "sources": [
+        {
+          "path": "src/lib/quiz.ts",
+          "line": 15,
+          "end_line": 268
+        },
+        {
+          "path": "src/lib/quiz.ts",
+          "line": 270,
+          "end_line": 410
+        },
+        {
+          "path": "src/lib/recommendations.ts",
+          "line": 1,
+          "end_line": 23
+        }
+      ]
+    },
+    {
+      "id": "bank",
+      "type": "frontend",
+      "label": "Bundled question bank",
+      "sublabel": "Five variants per template",
+      "pos": [
+        340,
+        425
+      ],
+      "size": [
+        200,
+        70
+      ],
+      "sources": [
+        {
+          "path": "src/data/questions.ts",
+          "line": 802,
+          "end_line": 841
+        }
+      ]
+    },
+    {
+      "id": "adapter",
+      "type": "frontend",
+      "label": "Storage adapter",
+      "sublabel": "I/O may throw; parse fallback",
+      "pos": [
+        40,
+        235
+      ],
+      "size": [
+        190,
+        75
+      ],
+      "sources": [
+        {
+          "path": "src/lib/storage.ts",
+          "line": 11,
+          "end_line": 76
+        },
+        {
+          "path": "src/lib/storage.ts",
+          "line": 78,
+          "end_line": 125
+        }
+      ]
+    },
+    {
+      "id": "store",
+      "type": "database",
+      "label": "Browser localStorage",
+      "sublabel": "Origin-local \u2022 no cloud sync",
+      "pos": [
+        40,
+        425
+      ],
+      "size": [
+        190,
+        70
+      ],
+      "sources": [
+        {
+          "path": "src/lib/storage.ts",
+          "line": 37,
+          "end_line": 76
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "study",
+      "from": "learner",
+      "to": "views",
+      "label": "study"
+    },
+    {
+      "id": "intent",
+      "from": "views",
+      "to": "app",
+      "label": "intent callbacks"
+    },
+    {
+      "id": "props",
+      "from": "app",
+      "to": "views",
+      "label": "state props"
+    },
+    {
+      "id": "compute",
+      "from": "app",
+      "to": "quiz",
+      "label": "select / score"
+    },
+    {
+      "id": "persist",
+      "from": "app",
+      "to": "adapter",
+      "label": "load / save"
+    },
+    {
+      "id": "import",
+      "from": "app",
+      "to": "bank",
+      "label": "import / lookup"
+    },
+    {
+      "id": "io",
+      "from": "adapter",
+      "to": "store",
+      "label": "getItem / setItem"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "One browser runtime",
+      "items": [
+        "Views emit callbacks; App owns state and passes props.",
+        "Helpers return values; only the adapter accesses localStorage."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Deliberate tradeoff",
+      "items": [
+        "No accounts or sync: progress stays with this origin/profile.",
+        "App saves on state change; storage access errors are unhandled."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Practice, not assessment",
+      "items": [
+        "Bank and answer keys ship in the client; no AI or Databricks API.",
+        "Tests exercise selection, UI and reload/reset; no exam outcome proof."
+      ]
+    }
+  ]
+}

@@ -41,6 +41,14 @@ npm run ci
 - Local-only storage (no backend/auth in v1).
 - Weekly checklist and Quiz are the two core app experiences.
 
+## Architecture: one state owner, explicit browser I/O
+
+`App` owns the study journey and delegates persistence to a small storage adapter. That keeps practice account-free, but storage access failures have no recovery UI and clearing browser storage loses progress.
+
+[![Browser study architecture: React views and App coordinate quiz helpers, a bundled question bank and browser-local storage.](docs/architecture/study-app.svg)](docs/architecture/README.md)
+
+[Trace the source, decisions and failure boundaries](docs/architecture/README.md), or [download the standalone interactive diagram](https://raw.githubusercontent.com/wolffrichardj/databricks-associate-study-guide/main/docs/architecture/study-app.html) and open the saved HTML locally. GitHub does not run this HTML as a hosted app.
+
 ## Build notes and lessons learned
 
 To see the lessons we learned and how we built and managed this codebase, go here: [LESSONS_LEARNED.md](./LESSONS_LEARNED.md).
