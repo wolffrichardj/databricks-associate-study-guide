@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-10",
+  "source_revision": "3b3799d5ba469fc5ed937fd09e90395302773277",
+  "scope": "Documentation only; app source/tests unchanged",
+  "local_checks": {
+    "runtime": "Node 22.23.4",
+    "CI=true npm run ci": {
+      "status": "passed",
+      "unit_tests": 15,
+      "e2e_tests": 6,
+      "e2e_projects": [
+        "chromium",
+        "mobile"
+      ]
+    },
+    "npm run build": "passed",
+    "archify_finalize": "validate/deliver/strict check/browser-check passed; showcase; zero diagnostics",
+    "visual_review": "Inspected finalized light/dark captures at 1440x900 and 2048x1320; clean static exports and README-width preview reviewed separately"
+  },
+  "limits": [
+    "Host Node 25.9.0 failed App test setup: localStorage.clear is not a function. Re-run using repository Node 22 passed.",
+    "npm install reported 25 dependency vulnerabilities; dependency remediation is outside this documentation change.",
+    "No current exam-content alignment/reuse-license, learner-outcome, production-host or real-device acceptance claim.",
+    "Host-specific full receipts are private. Portable artifact manifest records unchanged public bytes; strict provenance requires local regeneration."
+  ],
+  "screenshots": {
+    "weekly.png": {
+      "sha256": "bf25f28c1ed905d24cfe45aa49e55185f89a46b9411f05f94111f0ff960bac6e",
+      "viewport": "1440x900"
+    },
+    "quiz.png": {
+      "sha256": "fd9ab61ba4cedf4ffcaf8da1eb4e45aa18992106d00aecf6205d33825359ed68",
+      "viewport": "1440x900"
+    },
+    "quiz-sample.png": {
+      "sha256": "5ff92353470723cad42f54fb37da1303a4fe6d089691b62782ac3267cd3d1fd6",
+      "viewport": "1440x900"
+    }
+  }
+}

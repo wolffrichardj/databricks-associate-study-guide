@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/wolffrichardj/databricks-associate-study-guide",
+  "source_revision": "3b3799d5ba469fc5ed937fd09e90395302773277",
+  "renderer": "Archify 3.2.0",
+  "manifest_kind": "portable-publication-hashes; not a strict Archify provenance sidecar",
+  "files": {
+    "candidate.json": {
+      "sha256": "20a1e922130cc97f38a10b364f48f3b9405f2c8519c6006d2d449d2aefef96f9",
+      "bytes": 5459
+    },
+    "study-app.html": {
+      "sha256": "f6a1c5aac82e9fa24035e7b97c70ad17e619c8e855bfacf87d0642fe4c06bb05",
+      "bytes": 823779
+    },
+    "study-app.svg": {
+      "sha256": "d9d2f2974c184c9b4b2040e63cfc9d16065b8612287cf38c3a8039a1d4cefb8a",
+      "bytes": 168032
+    },
+    "study-app.png": {
+      "sha256": "aed201e6020e1a736f3254a8530e277426aa8ff3928678ad1688280c610cb3df",
+      "bytes": 631034
+    }
+  }
+}
