@@ -15,6 +15,7 @@ node_modules/
 .env
 .env.*
 !.env.example
+!.env.*.example
 
 # logs
 npm-debug.log*
@@ -27,12 +28,6 @@ pnpm-debug.log*
 .idea/
 .vscode/*
 !.vscode/extensions.json
-
-# Local environment and credentials
-.env
-.env.*
-!.env.example
-!.env.*.example
 
 # Local browser automation scratch files
 .playwright-cli/
