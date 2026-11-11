@@ -27,3 +27,20 @@ pnpm-debug.log*
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Local browser automation scratch files
+.playwright-cli/
+/output/playwright/
+
+# Machine-specific Archify receipts; public diagrams and manifests stay tracked
+*.delivery.json
+*.delivery-pending.json
+*.browser-check.json
+*.finalize.json
+*.finalize-summary.json
